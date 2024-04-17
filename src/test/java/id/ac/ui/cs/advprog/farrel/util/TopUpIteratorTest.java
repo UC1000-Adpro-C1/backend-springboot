@@ -15,7 +15,7 @@ class TopUpIteratorTest {
     public void setUp() {
         topUps = new ArrayList<TopUp>();
         topUps.add(new TopUp(UUID.randomUUID(), "PENDING"));
-        topUps.add(new TopUp(UUID.randomUUID(), "ACCEPTED"));
+        topUps.add(new TopUp(UUID.randomUUID(), "SUCCESS"));
         topUps.add(new TopUp(UUID.randomUUID(), "PENDING"));
         topUpIterator = new TopUpIterator(topUps);
     }
@@ -32,7 +32,7 @@ class TopUpIteratorTest {
     public void testFindByStatusNotPending() {
         ArrayList<TopUp> nonPendingTopUps = topUpIterator.findNotByStatus("PENDING");
         assertEquals(1, nonPendingTopUps.size());
-        assertEquals("ACCEPTED", nonPendingTopUps.get(0).getStatus());
+        assertEquals("SUCCESS", nonPendingTopUps.get(0).getStatus());
     }
 
     @Test
