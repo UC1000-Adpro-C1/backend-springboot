@@ -40,6 +40,7 @@ class TopUpIteratorTest {
         UUID id = topUps.get(0).getId();
         TopUp foundTopUp = (TopUp) topUpIterator.findById(id);
         assertNotNull(foundTopUp);
+        assertNotNull(foundTopUp);
         assertEquals(id, foundTopUp.getId());
     }
 
