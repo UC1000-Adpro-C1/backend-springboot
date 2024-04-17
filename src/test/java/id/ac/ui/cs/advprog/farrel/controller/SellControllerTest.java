@@ -24,6 +24,7 @@ class SellControllerTest {
         assertEquals("This is the page to view the sale with id-" + saleId, response.getBody());
     }
 
+    
     @Test
     void testSaleEdit() {
         String saleId = "718bd872-bb52-42ec-9c39-2c5ec3ed5a97";
