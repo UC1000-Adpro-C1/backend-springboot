@@ -13,7 +13,7 @@ class PaymentIteratorTest {
 
     @BeforeEach
     public void setUp() {
-        payments = new ArrayList<TopUp>();
+        payments = new ArrayList<Payment>();
         payments.add(new Payment(UUID.randomUUID(), "PENDING"));
         payments.add(new Payment(UUID.randomUUID(), "SUCCESS"));
         payments.add(new Payment(UUID.randomUUID(), "PENDING"));
