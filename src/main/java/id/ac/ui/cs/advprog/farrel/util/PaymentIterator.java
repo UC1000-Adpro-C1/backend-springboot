@@ -43,10 +43,10 @@ public class PaymentIterator {
         return result;
     }
 
-    public TopUp findById(UUID id) {
-        for (TopUp topUp : topUps) {
-            if (topUp.getId().equals(id)) {
-                return topUp;
+    public Payment findById(UUID id) {
+        for (Payment payment : payments) {
+            if (payment.getId().equals(id)) {
+                return payment;
             }
         }
         return null;
