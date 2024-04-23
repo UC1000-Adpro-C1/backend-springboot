@@ -1,11 +1,13 @@
 package id.ac.ui.cs.advprog.farrel.util;
 
+import id.ac.ui.cs.advprog.farrel.model.TopUp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class TopUpIterator {
-    private List<TopUp> topUps;
+    private final List<TopUp> topUps;
     private int position = 0;
 
     public TopUpIterator(List<TopUp> topUps) {
@@ -45,7 +47,7 @@ public class TopUpIterator {
 
     public TopUp findById(UUID id) {
         for (TopUp topUp : topUps) {
-            if (topUp.getId().equals(id)) {
+            if (topUp.getTopUpId().equals(id)) {
                 return topUp;
             }
         }
