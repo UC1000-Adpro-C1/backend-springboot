@@ -1,6 +1,5 @@
 package id.ac.ui.cs.advprog.farrel.util;
 
-import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 
 import org.junit.jupiter.api.BeforeEach;
