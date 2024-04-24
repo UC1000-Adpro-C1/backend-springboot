@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.service;
 
 import id.ac.ui.cs.advprog.farrel.model.Product;
-import id.ac.ui.cs.advprog.farrel.repository.ProductRepository;
+import id.ac.ui.cs.advprog.farrel.repository.SellRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ class SellControllerServiceImplTest {
     private  SellControllerServiceImpl productService;
 
     @Mock
-    private ProductRepository productRepository;
+    private SellRepository productRepository;
 
     @Test
     void testCreate() {

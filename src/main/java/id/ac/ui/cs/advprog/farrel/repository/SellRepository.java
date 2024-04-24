@@ -1,7 +1,6 @@
 package id.ac.ui.cs.advprog.farrel.repository;
 
 import id.ac.ui.cs.advprog.farrel.model.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.Iterator;
 
 
 @Repository
-public class ProductRepository {
+public class SellRepository {
     List<Product> productData = new ArrayList<>();
 
     public Product create(Product product) {
