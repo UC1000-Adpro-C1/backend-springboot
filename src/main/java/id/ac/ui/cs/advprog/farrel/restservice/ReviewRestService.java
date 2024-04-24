@@ -1,0 +1,19 @@
+package id.ac.ui.cs.advprog.farrel.restservice;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import id.ac.ui.cs.advprog.farrel.model.Review;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public interface ReviewRestService {
+    Review createRestReview(Review buku);
+    List<Review> retrieveRestAllReview();
+    Review getRestReviewById(String id);
+    Review updateRestReview(Review bukuFromDTO);
+}
