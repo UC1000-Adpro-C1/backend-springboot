@@ -1,58 +1,63 @@
 package id.ac.ui.cs.advprog.farrel.controller;
+import id.ac.ui.cs.advprog.farrel.model.Product;
+import id.ac.ui.cs.advprog.farrel.service.SellControllerService;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.springframework.ui.Model;
 
-class SellControllerTest {
+@ExtendWith(MockitoExtension.class)
+public class SellControllerTest {
 
-    private final SellController sellController = new SellController();
+    @InjectMocks
+    SellController ProductController;
+
+    @Mock
+    private SellControllerService productService;
+
+    @Mock
+    private Model model;
 
     @Test
-    void testListSales() {
-        ResponseEntity<String> response = sellController.listSales();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to view the list of sales for all users.", response.getBody());
+    void testCreateProductPage() {
+        String result = ProductController.createProductPage(model);
+        assertEquals("createProduct", result);
     }
 
     @Test
-    void testSaleDetail() {
-        String saleId = "718bd872-bb52-42ec-9c39-2c5ec3ed5a97";
-        ResponseEntity<String> response = sellController.saleDetail(saleId);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to view the sale with id-" + saleId, response.getBody());
-    }
-
-    
-    @Test
-    void testSaleEdit() {
-        String saleId = "718bd872-bb52-42ec-9c39-2c5ec3ed5a97";
-        ResponseEntity<String> response = sellController.saleEdit(saleId);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to edit the status of sale with id-" + saleId, response.getBody());
+    void createProductPost() {
+        Product product = new Product();
+        String result = ProductController.createProductPost(product ,model);
+        assertEquals("redirect:list", result);
     }
 
     @Test
-    void testListProducts() {
-        ResponseEntity<String> response = sellController.listProducts();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to view the list of products being sold.", response.getBody());
+    void testProductListPage() {
+        String result = ProductController.productListPage(model);
+        assertEquals("productList", result);
     }
 
     @Test
-    void testProductDetail() {
-        String productId = "718bd872-bb52-42ec-9c39-2c5ec3ed5a97";
-        ResponseEntity<String> response = sellController.productDetail(productId);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to view the details of product with id-" + productId, response.getBody());
+    void testEditProductPage() {
+        String result = ProductController.editProductPage(model, "1");
+        assertEquals("editProduct", result);
     }
 
     @Test
-    void testProductEdit() {
-        String productId = "718bd872-bb52-42ec-9c39-2c5ec3ed5a97";
-        ResponseEntity<String> response = sellController.productEdit(productId);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("This is the page to edit the details of product with id-" + productId, response.getBody());
+    void testEditProductPost() {
+        Product product = new Product();
+        String result = ProductController.editProductPost(product, model, "1");
+        assertEquals("redirect:../list", result);
+    }
+
+    @Test
+    void testDeleteProduct() {
+        Product product = new Product();
+        String result = ProductController.deleteProductGet(product, model, "1");
+        assertEquals("redirect:/product/list", result);
     }
 }
