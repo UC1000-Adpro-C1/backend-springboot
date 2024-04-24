@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.farrel.util;
 
+import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,5 +51,15 @@ public class TopUpIterator {
             }
         }
         return null;
+    }
+
+    public void save(TopUp topUp) {
+        for (int i = 0; i < topUps.size(); i++) {
+            if (topUps.get(i).getTopUpId().equals(topUp.getTopUpId())) {
+                topUps.set(i, topUp);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("TopUp not found: " + topUp.getTopUpId());
     }
 }
