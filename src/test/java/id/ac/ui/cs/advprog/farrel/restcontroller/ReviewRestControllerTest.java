@@ -148,9 +148,9 @@ public class ReviewRestControllerTest {
 
     @Test
     public void testFindReviewByProductIdNotFound() throws Exception {
-        when(reviewRestService.getRestReviewByProductId("invalid-product-id")).thenThrow(new NoSuchElementException());
+        when(reviewRestService.getRestReviewByProductId("invalidproductid")).thenThrow(new NoSuchElementException());
 
-        mockMvc.perform(get("/reviewProduct/invalid-product-id"))
+        mockMvc.perform(get("/reviewProduct/invalidproductid"))
             .andExpect(status().isNotFound())
             .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
             .andExpect(result -> assertEquals("Id Review invalid-product-id not found", result.getResolvedException().getMessage()));
