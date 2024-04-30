@@ -1,10 +1,12 @@
 package id.ac.ui.cs.advprog.farrel.restservice;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -98,4 +101,45 @@ public class ReviewRestServiceImplTest {
             reviewService.updateRestReview(review2);
         });
     }
+
+
+    @Test
+    public void testGetRestReviewByProductIdSuccess() {
+        when(reviewDb.findByProductId("eb558e9f-1c39-460e-8860-1111111")).thenReturn(Arrays.asList(review1));
+
+        List<Review> reviews = reviewService.getRestReviewByProductId("eb558e9f-1c39-460e-8860-1111111");
+        assertNotNull(reviews);
+        assertEquals(1, reviews.size());
+        assertEquals("Excellent", reviews.get(0).getReview());
+        verify(reviewDb, times(1)).findByProductId("eb558e9f-1c39-460e-8860-1111111");
+    }
+
+    @Test
+    public void testGetRestReviewByProductIdEmpty() {
+        when(reviewDb.findByProductId("non-existing-id")).thenReturn(Collections.emptyList());
+
+        List<Review> reviews = reviewService.getRestReviewByProductId("non-existing-id");
+        assertNotNull(reviews);
+        assertTrue(reviews.isEmpty());
+        verify(reviewDb, times(1)).findByProductId("non-existing-id");
+    }
+    @Test
+    public void testRestDeleteReviewSuccess() {
+        doNothing().when(reviewDb).deleteById("eb558e9f-1c39-460e-8860-71af6af63bd6");
+
+        assertDoesNotThrow(() -> reviewService.restDeleteReview("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+        verify(reviewDb, times(1)).deleteById("eb558e9f-1c39-460e-8860-71af6af63bd6");
+    }
+    @Test
+    public void testRestDeleteReviewNotFound() {
+        doThrow(new EmptyResultDataAccessException(1)).when(reviewDb).deleteById("non-existing-id");
+
+        Exception exception = assertThrows(NoSuchElementException.class, () -> reviewService.restDeleteReview("non-existing-id"));
+        assertEquals("No review found with ID: non-existing-id", exception.getMessage());
+        verify(reviewDb, times(1)).deleteById("non-existing-id");
+    }
+
+
+
+
 }
