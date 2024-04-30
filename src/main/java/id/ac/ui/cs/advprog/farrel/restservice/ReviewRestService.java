@@ -16,4 +16,7 @@ public interface ReviewRestService {
     List<Review> retrieveRestAllReview();
     Review getRestReviewById(String id);
     Review updateRestReview(Review bukuFromDTO);
+    List<Review> getRestReviewByProductId(String id);
+    void restDeleteReview(String id);
+
 }
