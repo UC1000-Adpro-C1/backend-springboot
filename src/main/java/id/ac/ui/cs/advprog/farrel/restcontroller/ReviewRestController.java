@@ -66,5 +66,25 @@ public class ReviewRestController {
            return new ResponseEntity<>(res, HttpStatus.OK);
         }
     }
+    
+    @DeleteMapping("/delReview/{id}")
+    public ResponseEntity<String> restDeleteReview(@PathVariable("id") String id) {
+        try {
+            reviewRestService.restDeleteReview(id);
+            return ResponseEntity.ok("Review berhasil dihapus!");
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review tidak ditemukan");
+        }
+    }
+
+    @GetMapping("/reviewProduct/{id}")
+    private List<Review> findReviewByProductId(@PathVariable("id") String id) {
+        try {
+            return reviewRestService.getRestReviewByProductId(id);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
+        }
+    }
+  
 
 }
