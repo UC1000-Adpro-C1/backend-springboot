@@ -15,16 +15,16 @@ import java.util.List;
 @Service
 public class ReviewRestServiceImpl implements ReviewRestService{
     @Autowired
-    private ReviewDb reviewdb;
+    private ReviewDb reviewDb;
     
     @Override
     public Review createRestReview(Review review){
-        reviewdb.save(review);
+        reviewDb.save(review);
         return review;
     }
     @Override
     public List<Review> retrieveRestAllReview() {
-        return reviewdb.findAll();
+        return reviewDb.findAll();
     }
 
     @Override
@@ -36,14 +36,13 @@ public class ReviewRestServiceImpl implements ReviewRestService{
         }
         return null;
     }
-   
     @Override
     public Review updateRestReview(Review updateReview){
         Review review = getRestReviewById(updateReview.getReviewId());
         if (review != null) {
             review.setReview(updateReview.getReview());
             review.setRating(updateReview.getRating());
-            reviewdb.save(review);
+            reviewDb.save(review);
             return review;
         } else {
              throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review with ID " + updateReview.getReviewId() + " not found");

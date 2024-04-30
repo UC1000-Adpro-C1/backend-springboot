@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.farrel.restcontroller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -18,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -113,4 +117,46 @@ public class ReviewRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rating").value(5));
     }
+    @Test
+    public void testDeleteReviewSuccess() throws Exception {
+        doNothing().when(reviewRestService).restDeleteReview("existing-id");
+
+        mockMvc.perform(delete("/delReview/existing-id"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Review berhasil dihapus!"));
+    }
+    @Test
+    public void testDeleteReviewNotFound() throws Exception {
+        doThrow(new NoSuchElementException()).when(reviewRestService).restDeleteReview("non-existing-id");
+
+        mockMvc.perform(delete("/delReview/non-existing-id"))
+            .andExpect(status().isNotFound())
+            .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+            .andExpect(result -> assertEquals("Review tidak ditemukan", result.getResolvedException().getMessage()));
+    }
+    @Test
+    public void testFindReviewByProductIdSuccess() throws Exception {
+        List<Review> reviews = Arrays.asList(review1, review2);
+        when(reviewRestService.getRestReviewByProductId("valid-product-id")).thenReturn(reviews);
+
+        mockMvc.perform(get("/reviewProduct/valid-product-id"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].reviewId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"))
+            .andExpect(jsonPath("$[1].reviewId").value("eb558e9f-1c39-460e-8860-71af6af63bd7"));
+    }
+
+    @Test
+    public void testFindReviewByProductIdNotFound() throws Exception {
+        when(reviewRestService.getRestReviewByProductId("invalid-product-id")).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/reviewProduct/invalid-product-id"))
+            .andExpect(status().isNotFound())
+            .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+            .andExpect(result -> assertEquals("Id Review invalid-product-id not found", result.getResolvedException().getMessage()));
+    }
+
+
+
+    
 }

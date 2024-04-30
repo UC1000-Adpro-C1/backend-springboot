@@ -20,6 +20,7 @@ import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.restservice.ReviewRestService;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +47,6 @@ public class ReviewRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
         }
     }
-    // create review rest
     @PostMapping("/review/create")
     public ResponseEntity<Review> restAddReview(@RequestBody Review review, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
