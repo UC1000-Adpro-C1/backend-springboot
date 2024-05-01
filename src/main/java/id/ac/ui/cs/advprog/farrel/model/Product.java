@@ -26,6 +26,14 @@ public class Product {
         this.description = builder.description;
     }
 
+    public void setStockQuantity(int stock) {
+        if (stock < 0) {
+            this.stockQuantity = 0;
+        } else {
+            this.stockQuantity = stock;
+        }
+    }
+
     public static class ProductBuilder {
         // Required parameters
         private String name;
@@ -38,6 +46,16 @@ public class Product {
         public ProductBuilder(String name, int price) {
             this.name = name;
             this.price = price;
+        }
+
+        public ProductBuilder setStockQuantity(int stock) {
+            this.stock = stock;
+            return this;
+        }
+
+        public ProductBuilder setDescription(String description) {
+            this.description = description;
+            return this;
         }
 
         public Product build() {

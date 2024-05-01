@@ -22,7 +22,7 @@ class SellRepositoryTest {
     }
     @Test
     void testCreateAndFind() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);
@@ -45,7 +45,7 @@ class SellRepositoryTest {
     }
     @Test
     void testFindAllIfMoreThanOneProduct() {
-        Product product1 = new Product();
+        Product product1 = new Product(null);
         product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product1.setProductName("Sampo Cap Bambang");
         product1.setStockQuantity(100);
@@ -53,7 +53,7 @@ class SellRepositoryTest {
         product1.setPrice(1010);
         productRepository.create(product1);
 
-        Product product2 = new Product();
+        Product product2 = new Product(null);
         product2.setProductId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
         product2.setProductName("Sampo Cap Usep");
         product2.setStockQuantity(50);
@@ -72,7 +72,7 @@ class SellRepositoryTest {
 
     @Test
     void testEditProduct() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(10);
@@ -80,7 +80,7 @@ class SellRepositoryTest {
         product.setPrice(1010);
         productRepository.create(product);
 
-        Product editedProduct = new Product();
+        Product editedProduct = new Product(null);
         editedProduct.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         editedProduct.setProductName("Sampo Cap Bambang");
         product.setDescription("sampo");
@@ -95,7 +95,7 @@ class SellRepositoryTest {
 
     @Test
     void testProductQuantityIfNegative() {
-        Product product1 = new Product();
+        Product product1 = new Product(null);
         product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product1.setProductName("Sampo Cap Bambang");
         product1.setStockQuantity(-100);
@@ -107,7 +107,7 @@ class SellRepositoryTest {
 
     @Test
     void testDeleteProduct() {
-        Product product1 = new Product();
+        Product product1 = new Product(null);
         product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product1.setProductName("Sampo Cap Bambang");
         product1.setStockQuantity(100);

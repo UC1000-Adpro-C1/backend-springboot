@@ -24,7 +24,7 @@ class SellControllerServiceImplTest {
 
     @Test
     void testCreate() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);
@@ -36,7 +36,7 @@ class SellControllerServiceImplTest {
 
     @Test
     void testFindAll() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);
@@ -52,7 +52,7 @@ class SellControllerServiceImplTest {
 
     @Test
     void testFindById() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);
@@ -62,7 +62,7 @@ class SellControllerServiceImplTest {
 
     @Test
     void testEditProduct() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);
@@ -73,7 +73,7 @@ class SellControllerServiceImplTest {
 
     @Test
     void testDeleteProduct() {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         product.setProductName("Sampo Cap Bambang");
         product.setStockQuantity(100);

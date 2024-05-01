@@ -30,7 +30,7 @@ public class SellControllerTest {
 
     @Test
     void createProductPost() {
-        Product product = new Product();
+        Product product = new Product(null);
         String result = ProductController.createProductPost(product ,model);
         assertEquals("redirect:list", result);
     }
@@ -49,14 +49,14 @@ public class SellControllerTest {
 
     @Test
     void testEditProductPost() {
-        Product product = new Product();
+        Product product = new Product(null);
         String result = ProductController.editProductPost(product, model, "1");
         assertEquals("redirect:../list", result);
     }
 
     @Test
     void testDeleteProduct() {
-        Product product = new Product();
+        Product product = new Product(null);
         String result = ProductController.deleteProductGet(product, model, "1");
         assertEquals("redirect:/product/list", result);
     }
