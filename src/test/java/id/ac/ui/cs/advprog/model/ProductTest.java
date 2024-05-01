@@ -24,24 +24,24 @@ class ProductTest {
     }
 
     @Test
-    void testGetListingName(){
+    void testGetProductName(){
         assertEquals("Red Sweater", this.product.getProductName());
     }
     @Test
-    void testGetListingDescription(){
+    void testGetProductDescription(){
         assertEquals("The color of the sweater is red", this.product.getDescription());
     }
     
     @Test
-    void testGetListingPrice(){
+    void testGetProductPrice(){
         assertEquals(12000, this.product.getPrice());
     }
     @Test
-    void testGetListingStock(){
+    void testGetProductStock(){
         assertEquals(99, this.product.getStockQuantity());
     }
     @Test
-    void testGetListingStockIfNegative(){
+    void testGetProductStockIfNegative(){
         this.product.setStockQuantity(-1);
         assertEquals(0, this.product.getStockQuantity());
     }
