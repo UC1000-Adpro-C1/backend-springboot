@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.util;
 
+import id.ac.ui.cs.advprog.farrel.model.TopUp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
