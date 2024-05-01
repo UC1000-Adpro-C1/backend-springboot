@@ -15,7 +15,7 @@ public class StaffRepository {
         staffMap.put(staff.getUserId(), staff);
     }
 
-    public Staff findByUserId(String username) {
-        return staffMap.get(username);
+    public Staff findByUserId(String userId) {
+        return staffMap.get(userId);
     }
 }

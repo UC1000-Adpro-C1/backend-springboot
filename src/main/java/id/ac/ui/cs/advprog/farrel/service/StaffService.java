@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.service;
 
+import org.springframework.stereotype.Service;
+
 import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 import id.ac.ui.cs.advprog.farrel.model.Staff;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
@@ -8,6 +10,7 @@ import id.ac.ui.cs.advprog.farrel.repository.StaffRepository;
 
 import java.util.UUID;
 
+@Service
 public class StaffService {
     private StaffRepository staffRepository;
     private TopUpIterator topUpIterator;

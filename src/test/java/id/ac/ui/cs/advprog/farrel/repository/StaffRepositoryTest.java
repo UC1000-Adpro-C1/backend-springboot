@@ -27,6 +27,15 @@ public class StaffRepositoryTest {
     }
 
     @Test
+    public void testNotSaveAndFindByUsername() {
+        Staff staff = new Staff();
+        staff.setUserId("staff1");
+
+        Staff foundStaff = staffRepository.findByUserId("staff1");
+        assertNull(foundStaff);
+    }
+
+    @Test
     public void testFindByUsernameNonExistent() {
         Staff foundStaff = staffRepository.findByUserId("nonexistent");
         assertNull(foundStaff);
