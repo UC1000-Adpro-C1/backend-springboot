@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/product")
 public class SellController {
     @Autowired
@@ -17,7 +17,7 @@ public class SellController {
 
     @GetMapping("/create")
     public String createProductPage(Model model) {
-        Product product = new Product();
+        Product product = new Product(null);
         model.addAttribute("product", product);
         return "createProduct";
     }
@@ -44,7 +44,7 @@ public class SellController {
 
     @GetMapping("/edit/{idProduct}")
     public String editProductPage(Model model, @PathVariable("idProduct") String productId) {
-        Product product = new Product();
+        Product product = new Product(null);
         product.setProductId(productId);
         model.addAttribute("product", product);
         return "editProduct";
