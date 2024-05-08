@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -15,8 +12,8 @@ import java.util.UUID;
 @Table(name = "product")
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String productId;
-
     private String productName;
     private String description;
     private double price;
@@ -80,6 +77,11 @@ public class Product {
         }
         public Product build() {
             return new Product(this);
+        }
+
+        public ProductBuilder setImageUrl(String s) {
+            this.imageUrl = imageUrl;
+            return this;
         }
     }
 }
