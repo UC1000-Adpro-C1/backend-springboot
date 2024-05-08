@@ -1,90 +1,86 @@
 package id.ac.ui.cs.advprog.farrel.controller;
 
+import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
+import id.ac.ui.cs.advprog.farrel.model.Staff;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
-import id.ac.ui.cs.advprog.farrel.service.StaffService;
-import id.ac.ui.cs.advprog.farrel.util.TopUpIterator;
+import id.ac.ui.cs.advprog.farrel.service.StaffRestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class StaffRestControllerTest {
+class StaffRestControllerTest {
 
     @Mock
-    private TopUpIterator topUpIterator;
-
-    @Mock
-    private StaffService staffService;
+    private StaffRestService staffRestService;
 
     @InjectMocks
     private StaffRestController staffRestController;
 
-    private MockMvc mockMvc;
-
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(staffRestController).build();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testTopUpHistory() throws Exception {
-        List<TopUp> topUpList = new ArrayList<>();
-        when(topUpIterator.findNotByStatus("PENDING")).thenReturn(topUpList);
+    void testUpdateTopUpStatus() {
+        // Setup
+        UUID id = UUID.randomUUID();
+        TopUpStatus status = TopUpStatus.SUCCESS;
+        Staff staff = new Staff();
+        ResponseEntity<TopUp> expectedResponse = ResponseEntity.ok(new TopUp());
 
-        mockMvc.perform(get("/api/staff/topup-history"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray());
+        when(staffRestService.updateTopUpStatus(id, status, staff)).thenReturn(new TopUp());
 
-        verify(topUpIterator, times(1)).findNotByStatus("PENDING");
+        // Execute
+        ResponseEntity<TopUp> response = staffRestController.updateTopUpStatus(id, status, staff);
+
+        // Verify
+        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
+        verify(staffRestService, times(1)).updateTopUpStatus(id, status, staff);
     }
 
     @Test
-    void testOnGoingTopUp() throws Exception {
-        List<TopUp> onGoingTopUpList = new ArrayList<>();
-        when(topUpIterator.findByStatus("PENDING")).thenReturn(onGoingTopUpList);
+    void testGetPendingTopUps() {
+        // Setup
+        List<TopUp> topUps = new ArrayList<>();
+        topUps.add(new TopUp());
+        ResponseEntity<List<TopUp>> expectedResponse = ResponseEntity.ok(topUps);
 
-        mockMvc.perform(get("/api/staff/on-going-topup"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray());
+        when(staffRestService.getPendingTopUps()).thenReturn(topUps);
 
-        verify(topUpIterator, times(1)).findByStatus("PENDING");
+        // Execute
+        ResponseEntity<List<TopUp>> response = staffRestController.getPendingTopUps();
+
+        // Verify
+        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
+        verify(staffRestService, times(1)).getPendingTopUps();
     }
 
     @Test
-    void testUpdateTopUpStatus() throws Exception {
-        UUID topUpId = UUID.randomUUID();
-        String status = "SUCCESS";
+    void testGetNonPendingTopUps() {
+        // Setup
+        List<TopUp> topUps = new ArrayList<>();
+        topUps.add(new TopUp());
+        ResponseEntity<List<TopUp>> expectedResponse = ResponseEntity.ok(topUps);
 
-        mockMvc.perform(post("/api/staff/update-topup-status")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("topUpId", topUpId.toString())
-                        .param("status", status))
-                .andExpect(status().isOk());
+        when(staffRestService.getNonPendingTopUps()).thenReturn(topUps);
 
-        verify(staffService, times(1)).approveTopUp("staff1", topUpId);
+        // Execute
+        ResponseEntity<List<TopUp>> response = staffRestController.getNonPendingTopUps();
 
-        status = "FAILED";
-        mockMvc.perform(post("/api/staff/update-topup-status")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("topUpId", topUpId.toString())
-                        .param("status", status))
-                .andExpect(status().isOk());
-
-        verify(staffService, times(1)).rejectTopUp("staff1", topUpId);
+        // Verify
+        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
+        verify(staffRestService, times(1)).getNonPendingTopUps();
     }
 }
