@@ -1,43 +1,61 @@
 package id.ac.ui.cs.advprog.farrel.model;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
-class TaggedReviewTest{
-    TaggedReview review;
-    
+
+import java.util.UUID;
+
+class TaggedReviewTest {
+    private Review baseReview;
+    private TaggedReview taggedReview;
+
     @BeforeEach
-    void setUp(){
-        Review baseReview = new Review();
-        baseReview.setReviewId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        baseReview.setUserId("eb558e9f-1c39-460e-8860-12345678");
-        baseReview.setProductId("eb558e9f-1c39-460e-8860-1111111");
-        baseReview.setRating(5);
-        baseReview.setReview("Perfect for layering or as a standalone piece. A staple for any wardrobe.");
-       
-        this.review = new TaggedReview(baseReview, "Recommended");
+    void setUp() {
+        // Setup a base Review object
+        baseReview = new Review();
+        baseReview.setReviewId(UUID.randomUUID());
+        baseReview.setUserId("user123");
+        baseReview.setProductId("product456");
+        baseReview.setRating(4);
+        baseReview.setReview("This is a great product.");
 
-    }
-    @Test
-    void testGetReviewId(){
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.review.getReviewId());
+        // Decorate the Review object with a TaggedReview
+        taggedReview = new TaggedReview(baseReview, "Featured");
     }
 
     @Test
-    void testGetUserId(){
-        assertEquals("eb558e9f-1c39-460e-8860-12345678", this.review.getUserId());
+    void testGetReviewId() {
+        assertEquals(baseReview.getReviewId(), taggedReview.getReviewId());
     }
- 
+
     @Test
-    void testGetProductId(){
-        assertEquals("eb558e9f-1c39-460e-8860-1111111", this.review.getProductId());
+    void testGetUserId() {
+        assertEquals(baseReview.getUserId(), taggedReview.getUserId());
     }
+
     @Test
-    void testGetRate(){
-        assertEquals(5, this.review.getRating());
+    void testGetProductId() {
+        assertEquals(baseReview.getProductId(), taggedReview.getProductId());
     }
+
     @Test
-    void testGetReview(){
-        assertEquals("Perfect for layering or as a standalone piece. A staple for any wardrobe.", this.review.getReview());
+    void testGetRating() {
+        assertEquals(baseReview.getRating(), taggedReview.getRating());
+    }
+
+    @Test
+    void testGetReview() {
+        assertEquals(baseReview.getReview(), taggedReview.getReview());
+    }
+
+    @Test
+    void testGetTag() {
+        assertEquals("Featured", taggedReview.getTag());  // Note: this might be a mistake in your original class definition
+    }
+
+    @Test
+    void testTagIsSetCorrectly() {
+        assertEquals("Featured", taggedReview.getTag());
     }
 }

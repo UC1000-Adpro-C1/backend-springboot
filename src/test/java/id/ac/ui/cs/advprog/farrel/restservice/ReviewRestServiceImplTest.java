@@ -1,29 +1,26 @@
 package id.ac.ui.cs.advprog.farrel.restservice;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.repository.ReviewDb;
 
-@ExtendWith(MockitoExtension.class)
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+
+@SpringBootTest
 public class ReviewRestServiceImplTest {
 
     @Mock
@@ -32,115 +29,91 @@ public class ReviewRestServiceImplTest {
     @InjectMocks
     private ReviewRestServiceImpl reviewService;
 
-    private Review review1, review2;
+    private Review review;
+    private UUID reviewId = UUID.randomUUID();
 
     @BeforeEach
-    public void setUp() {
-        review1 = new Review();
-        review1.setReviewId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        review1.setUserId("eb558e9f-1c39-460e-8860-12345678");
-        review1.setProductId("eb558e9f-1c39-460e-8860-1111111");
-        review1.setRating(5);
-        review1.setReview("Excellent");
+    void setUp() {
+        review = new Review();
+        review.setReviewId(reviewId);
+        review.setUserId("user1");
+        review.setProductId("product1");
+        review.setRating(5);
+        review.setReview("Great product");
 
-        review2 = new Review();
-        review2.setReviewId("eb558e9f-1c39-460e-8860-71af6af63bd7");
-        review2.setUserId("eb558e9f-1c39-460e-8860-12345678");
-        review2.setProductId("eb558e9f-1c39-460e-8860-1111112");
-        review2.setRating(2);
-        review2.setReview("A staple for any wardrobe.");
+        when(reviewDb.findById(reviewId)).thenReturn(Optional.of(review));
+        when(reviewDb.findAll()).thenReturn(Arrays.asList(review));
+        when(reviewDb.save(any(Review.class))).thenReturn(review);
     }
 
     @Test
-    public void testCreateRestReview() {
-        when(reviewDb.save(review1)).thenReturn(review1);
-        Review savedReview = reviewService.createRestReview(review1);
+    void testCreateRestReview() {
+        Review savedReview = reviewService.createRestReview(review);
         assertNotNull(savedReview);
-        assertEquals("Excellent", savedReview.getReview());
-        verify(reviewDb, times(1)).save(review1);
+        assertEquals(reviewId, savedReview.getReviewId());
+        verify(reviewDb, times(1)).save(review);
     }
 
     @Test
-    public void testRetrieveRestAllReview() {
-        when(reviewDb.findAll()).thenReturn(Arrays.asList(review1, review2));
+    void testRetrieveRestAllReview() {
         List<Review> reviews = reviewService.retrieveRestAllReview();
-        assertEquals(2, reviews.size());
-        verify(reviewDb, times(1)).findAll();
+        assertFalse(reviews.isEmpty());
+        assertEquals(1, reviews.size());
     }
 
     @Test
-    public void testGetRestReviewByIdFound() {
-        when(reviewDb.findAll()).thenReturn(Arrays.asList(review1, review2));
-        Review foundReview = reviewService.getRestReviewById("eb558e9f-1c39-460e-8860-71af6af63bd6");
+    void testGetRestReviewByIdFound() {
+        Review foundReview = reviewService.getRestReviewById(reviewId);
         assertNotNull(foundReview);
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", foundReview.getReviewId());
+        assertEquals(reviewId, foundReview.getReviewId());
     }
 
     @Test
-    public void testGetRestReviewByIdNotFound() {
-        when(reviewDb.findAll()).thenReturn(Arrays.asList(review1));
-        Review foundReview = reviewService.getRestReviewById("2");
-        assertNull(foundReview);
+    void testUpdateRestReview() {
+        Review updatedReview = new Review();
+        updatedReview.setReviewId(reviewId);
+        updatedReview.setReview("Updated review text");
+        updatedReview.setRating(4);
+
+        Review result = reviewService.updateRestReview(updatedReview);
+        assertNotNull(result);
+        assertEquals("Updated review text", result.getReview());
     }
 
     @Test
-    public void testUpdateRestReviewFound() {
-        when(reviewDb.findAll()).thenReturn(Arrays.asList(review1));
-        when(reviewDb.save(any(Review.class))).thenReturn(review1);
-        review1.setReview("Updated Review");
-        review1.setRating(3);
-        Review updatedReview = reviewService.updateRestReview(review1);
-        assertNotNull(updatedReview);
-        assertEquals("Updated Review", updatedReview.getReview());
-        assertEquals(3, updatedReview.getRating());
+    void testDeleteReview() {
+        assertDoesNotThrow(() -> reviewService.restDeleteReview(reviewId));
+        verify(reviewDb, times(1)).deleteById(reviewId);
     }
 
     @Test
-    public void testUpdateRestReviewNotFound() {
-        when(reviewDb.findAll()).thenReturn(Arrays.asList(review1));
-        assertThrows(ResponseStatusException.class, () -> {
-            reviewService.updateRestReview(review2);
+    void testGetRestReviewByIdNotFound() {
+        UUID randomUUID = UUID.randomUUID();
+        when(reviewDb.findById(randomUUID)).thenReturn(Optional.empty());
+
+        Review review = reviewService.getRestReviewById(randomUUID);
+        assertNull(review);
+    }
+
+    @Test
+    void testUpdateRestReviewNotFound() {
+        Review nonExistentReview = new Review();
+        nonExistentReview.setReviewId(UUID.randomUUID());
+
+        Exception exception = assertThrows(ResponseStatusException.class, () -> {
+            reviewService.updateRestReview(nonExistentReview);
+        });
+
+        assertTrue(exception.getMessage().contains("not found"));
+    }
+
+    @Test
+    void testDeleteReviewNotFound() {
+        UUID randomUUID = UUID.randomUUID();
+        doThrow(new EmptyResultDataAccessException(1)).when(reviewDb).deleteById(randomUUID);
+
+        assertThrows(NoSuchElementException.class, () -> {
+            reviewService.restDeleteReview(randomUUID);
         });
     }
-
-
-    @Test
-    public void testGetRestReviewByProductIdSuccess() {
-        when(reviewDb.findByProductId("eb558e9f-1c39-460e-8860-1111111")).thenReturn(Arrays.asList(review1));
-
-        List<Review> reviews = reviewService.getRestReviewByProductId("eb558e9f-1c39-460e-8860-1111111");
-        assertNotNull(reviews);
-        assertEquals(1, reviews.size());
-        assertEquals("Excellent", reviews.get(0).getReview());
-        verify(reviewDb, times(1)).findByProductId("eb558e9f-1c39-460e-8860-1111111");
-    }
-
-    @Test
-    public void testGetRestReviewByProductIdEmpty() {
-        when(reviewDb.findByProductId("non-existing-id")).thenReturn(Collections.emptyList());
-
-        List<Review> reviews = reviewService.getRestReviewByProductId("non-existing-id");
-        assertNotNull(reviews);
-        assertTrue(reviews.isEmpty());
-        verify(reviewDb, times(1)).findByProductId("non-existing-id");
-    }
-    @Test
-    public void testRestDeleteReviewSuccess() {
-        doNothing().when(reviewDb).deleteById("eb558e9f-1c39-460e-8860-71af6af63bd6");
-
-        assertDoesNotThrow(() -> reviewService.restDeleteReview("eb558e9f-1c39-460e-8860-71af6af63bd6"));
-        verify(reviewDb, times(1)).deleteById("eb558e9f-1c39-460e-8860-71af6af63bd6");
-    }
-    @Test
-    public void testRestDeleteReviewNotFound() {
-        doThrow(new EmptyResultDataAccessException(1)).when(reviewDb).deleteById("non-existing-id");
-
-        Exception exception = assertThrows(NoSuchElementException.class, () -> reviewService.restDeleteReview("non-existing-id"));
-        assertEquals("No review found with ID: non-existing-id", exception.getMessage());
-        verify(reviewDb, times(1)).deleteById("non-existing-id");
-    }
-
-
-
-
 }

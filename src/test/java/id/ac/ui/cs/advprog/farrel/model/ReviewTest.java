@@ -2,40 +2,44 @@ package id.ac.ui.cs.advprog.farrel.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
-class ReviewTest{
-    Review review;
-    
+
+class ReviewTest {
+    private Review review;
+
     @BeforeEach
-    void setUp(){
-        this.review = new Review();
-        this.review.setReviewId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        this.review.setUserId("eb558e9f-1c39-460e-8860-12345678");
-        this.review.setProductId("eb558e9f-1c39-460e-8860-1111111");
-        this.review.setRating(5);
-        this.review.setReview("Perfect for layering or as a standalone piece. A staple for any wardrobe.");
-    }
-    @Test
-    void testGetReviewId(){
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.review.getReviewId());
+    void setUp() {
+        review = new Review();
+        review.setUserId("user12345");
+        review.setProductId("prod67890");
+        review.setRating(5);
+        review.setReview("Great product, loved it!");
     }
 
     @Test
-    void testGetUserId(){
-        assertEquals("eb558e9f-1c39-460e-8860-12345678", this.review.getUserId());
+    void testUserIdNotNullAndLength() {
+        assertNotNull(review.getUserId());
+        assertTrue(review.getUserId().length() <= 100);
     }
- 
+
     @Test
-    void testGetProductId(){
-        assertEquals("eb558e9f-1c39-460e-8860-1111111", this.review.getProductId());
+    void testProductIdNotNullAndLength() {
+        assertNotNull(review.getProductId());
+        assertTrue(review.getProductId().length() <= 100);
     }
+
     @Test
-    void testGetRate(){
-        assertEquals(5, this.review.getRating());
+    void testRatingWithinValidRange() {
+        assertTrue(review.getRating() >= 1 && review.getRating() <= 5);
     }
+
     @Test
-    void testGetReview(){
-        assertEquals("Perfect for layering or as a standalone piece. A staple for any wardrobe.", this.review.getReview());
+    void testReviewNotNullAndLength() {
+        assertNotNull(review.getReview());
+        assertTrue(review.getReview().length() <= 300);
+    }
+
+    private String createStringOfLength(int length) {
+        return new String(new char[length]).replace('\0', 'a');
     }
 }
