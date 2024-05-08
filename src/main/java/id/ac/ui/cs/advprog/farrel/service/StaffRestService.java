@@ -35,7 +35,7 @@ public class StaffRestService {
         }
 
         topUp.setStatus(status.name());
-        topUpIterator.save(topUp);
+        topUpIterator.update(topUp);
         return topUp;
     }
 

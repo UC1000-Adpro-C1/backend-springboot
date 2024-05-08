@@ -73,4 +73,35 @@ class StaffRestServiceTest {
         assertEquals(2, pendingTopUps.size());
     }
 
+    @Test
+    void testUpdateTopUpStatusUnhappyInvalidStatus() {
+        // Setup
+        UUID topUpId = UUID.randomUUID();
+        TopUp topUp = new TopUp();
+        topUp.setTopUpId(topUpId);
+        topUp.setStatus(TopUpStatus.SUCCESS.name()); // Existing status is not PENDING
+        Staff staff = new Staff();
+        staff.setStaff(true);
+        topUpIterator.save(topUp);
+
+        // Test & Verify
+        assertThrows(IllegalArgumentException.class, () -> staffRestService.updateTopUpStatus(topUpId, TopUpStatus.SUCCESS, staff));
+    }
+
+    @Test
+    void testUpdateTopUpStatusUnhappyUnauthorizedAccess() {
+        // Setup
+        UUID topUpId = UUID.randomUUID();
+        TopUp topUp = new TopUp();
+        topUp.setTopUpId(topUpId);
+        topUp.setStatus(TopUpStatus.PENDING.name());
+        Staff staff = new Staff(); // Not a valid staff
+        staff.setStaff(false);
+        topUpIterator.save(topUp);
+
+        // Test & Verify
+        assertThrows(IllegalArgumentException.class, () -> staffRestService.updateTopUpStatus(topUpId, TopUpStatus.SUCCESS, staff));
+    }
+
+
 }
