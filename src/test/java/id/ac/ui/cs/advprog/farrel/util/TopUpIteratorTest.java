@@ -97,4 +97,14 @@ class TopUpIteratorTest {
         TopUp foundTopUp = (TopUp) topUpIterator.findById(id);
         assertNull(foundTopUp);
     }
+
+    @Test
+    public void saveTest() {
+        UUID id = UUID.randomUUID();
+        TopUp newTopUp = new TopUp();
+        newTopUp.setTopUpId(id);
+        topUpIterator.save(newTopUp);
+
+        assertEquals(newTopUp, topUpIterator.findById(id));
+    }
 }

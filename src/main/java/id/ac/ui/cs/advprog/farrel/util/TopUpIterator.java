@@ -58,6 +58,10 @@ public class TopUpIterator {
     }
 
     public void save(TopUp topUp) {
+        topUps.add(topUp);
+    }
+
+    public void update(TopUp topUp) {
         for (int i = 0; i < topUps.size(); i++) {
             if (topUps.get(i).getTopUpId().equals(topUp.getTopUpId())) {
                 topUps.set(i, topUp);
