@@ -1,12 +1,15 @@
 package id.ac.ui.cs.advprog.farrel.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import id.ac.ui.cs.advprog.farrel.model.Product;
 
 public interface SellControllerService {
-    public Product create(Product product);
-    public List<Product> findAll();
-    public Product delete(Product product);
-    public Product edit(Product product);
+    CompletableFuture<Product> create(Product listing);
+    CompletableFuture<List<Product>> findAll();
+    CompletableFuture<Void> delete(String id);
+    CompletableFuture<Optional<Product>> findById(String id);
+    CompletableFuture<Product> update(Product listing);
 }

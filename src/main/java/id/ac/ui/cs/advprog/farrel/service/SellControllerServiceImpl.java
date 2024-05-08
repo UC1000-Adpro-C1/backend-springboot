@@ -3,42 +3,50 @@ package id.ac.ui.cs.advprog.farrel.service;
 import id.ac.ui.cs.advprog.farrel.model.Product;
 import id.ac.ui.cs.advprog.farrel.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class SellControllerServiceImpl implements SellControllerService {
+
     @Autowired
     private SellRepository productRepository;
 
     @Override
-    public Product create(Product product){
-        productRepository.create(product);
-        return product;
+    @Async
+    public CompletableFuture<Product> create(Product product){
+        productRepository.save(product);
+        return CompletableFuture.completedFuture(product);
     }
 
     @Override
-    public List<Product> findAll(){
-        Iterator<Product> productIterator = productRepository.findAll();
-        List<Product> allProduct = new ArrayList<>();
-        productIterator.forEachRemaining(allProduct::add);
-        return allProduct;
+    @Async
+    public CompletableFuture<List<Product>> findAll(){
+        return CompletableFuture.completedFuture(productRepository.findAll());
     }
 
     @Override
-    public Product delete(Product product) {
-        return productRepository.delete(product);
+    @Async
+    public CompletableFuture<Void> delete(String id){
+        productRepository.deleteById(id);
+        return CompletableFuture.completedFuture(null);
     }
 
-    public Product edit(Product product){
-        productRepository.edit(product);
-        return product;
+    @Override
+    @Async
+    public CompletableFuture<Product> update(Product product){
+        productRepository.save(product);
+        return CompletableFuture.completedFuture(product);
     }
 
-    public Product findById(String productId){
-        return productRepository.findById(productId);
+    @Override
+    @Async
+    public CompletableFuture<Optional<Product>> findById(String id){
+
+        return CompletableFuture.completedFuture(productRepository.findById(id));
     }
 }
