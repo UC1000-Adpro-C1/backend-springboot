@@ -4,19 +4,39 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name="topup")
+@Entity
 @Getter @Setter
 public class TopUp {
-    private long amount;
-    private String status = TopUpStatus.PENDING.name();
-    private LocalDate transactionTime;
-    private ArrayList<User> observerUsers = new ArrayList<User>();
-    private UUID topUpId;
-    private String userOwnerId;
 
-    public TopUp () {};
+    @Column(name="amount")
+    private long amount;
+
+    @Column(name = "status")
+    private String status = TopUpStatus.PENDING.name();
+
+    @Column(name = "transactionTime")
+    private LocalDate transactionTime;
+
+//    private ArrayList<User> observerUsers = new ArrayList<User>();
+
+    @Id
+    @Column(name = "topUpId", updatable = false, nullable = false)
+    private UUID topUpId;
+
+    @Column(name = "userOwnerId")
+    private String userOwnerId;
 
     public TopUp (UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
         this.topUpId = topUpId;
@@ -27,7 +47,7 @@ public class TopUp {
         if (observerUsers.isEmpty()) {
             throw new IllegalArgumentException();
         } else {
-            this.observerUsers = observerUsers;
+//            this.observerUsers = observerUsers;
         }
     }
 

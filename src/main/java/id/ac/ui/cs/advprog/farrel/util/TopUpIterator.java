@@ -2,14 +2,16 @@ package id.ac.ui.cs.advprog.farrel.util;
 
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
-public class TopUpIterator {
+@Repository
+public class TopUpIterator{
     private final List<TopUp> topUps;
     private int position = 0;
 

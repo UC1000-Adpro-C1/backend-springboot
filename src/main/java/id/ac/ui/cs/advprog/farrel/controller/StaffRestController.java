@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/topup")
+@RequestMapping("/api/staff/topup")
 public class StaffRestController {
 
     private final StaffRestService staffRestService;
