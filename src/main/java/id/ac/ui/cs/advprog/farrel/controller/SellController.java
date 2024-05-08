@@ -1,60 +1,103 @@
 package id.ac.ui.cs.advprog.farrel.controller;
 import id.ac.ui.cs.advprog.farrel.model.Product;
 import id.ac.ui.cs.advprog.farrel.service.SellControllerService;
-import id.ac.ui.cs.advprog.farrel.service.SellControllerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping(path="/product", produces="application/json")
+@CrossOrigin(origins="*")
 public class SellController {
+
     @Autowired
-    private SellControllerService service;
+    SellControllerService productService;
 
-    @GetMapping("/create")
-    public String createProductPage(Model model) {
-        Product product = new Product(null);
-        model.addAttribute("product", product);
-        return "createProduct";
+    @PostMapping
+    public CompletableFuture<ResponseEntity<Map<String, Object>>> createProduct(@RequestBody Product product){
+        Map<String, Object> res = new HashMap<>();
+        return productService.create(product)
+                .thenApply(createdProduct -> {
+                    res.put("product", createdProduct);
+                    res.put("message", "Product Created Successfully");
+                    return ResponseEntity.status(HttpStatus.CREATED).body(res);
+                })
+                .exceptionally(e -> {
+                    res.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    res.put("error", e.getMessage());
+                    res.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+                });
     }
 
-    @PostMapping("/create")
-    public String createProductPost(@ModelAttribute Product product, Model model) {
-        service.create(product);
-        return "redirect:list";
+    @DeleteMapping("/{id}")
+    public CompletableFuture<ResponseEntity<Map<String, Object>>> deleteProduct(@PathVariable("id") String id){
+        Map<String, Object> res = new HashMap<>();
+        return productService.delete(id)
+                .thenApply(result -> {
+                    res.put("code", HttpStatus.OK.value());
+                    res.put("message", "Listing Deleted Successfully");
+                    return ResponseEntity.status(HttpStatus.OK).body(res);
+                })
+                .exceptionally(e -> {
+                    res.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    res.put("error", e.getMessage());
+                    res.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+                });
     }
 
-    @GetMapping("/list")
-    public String productListPage(Model model){
-        List<Product> allProducts = service.findAll();
-        model.addAttribute("products", allProducts);
-        return "productList";
+    @PutMapping
+    public CompletableFuture<ResponseEntity<Map<String, Object>>> updateProduct(@RequestBody Product product){
+        Map<String, Object> res = new HashMap<>();
+        return productService.update(product)
+                .thenApply(updatedProduct -> {
+                    res.put("product", updatedProduct);
+                    res.put("message", "Product ID " + updatedProduct.getProductId() +" updated Successfully");
+                    return ResponseEntity.status(HttpStatus.CREATED).body(res);
+                })
+                .exceptionally(e -> {
+                    res.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    res.put("error", e.getMessage());
+                    res.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+                });
     }
 
-    @GetMapping("/delete/{idProduct}")
-    public String deleteProductGet(@ModelAttribute Product product, Model model, @PathVariable("idProduct") String productId) {
-        product.setProductId(productId);
-        service.delete(product);
-        return "redirect:/product/list";
+    @GetMapping
+    public CompletableFuture<ResponseEntity<List<Product>>> findAllProduct(){
+        return productService.findAll()
+                .thenApplyAsync(products -> ResponseEntity.ok(products))
+                .exceptionally(exception -> {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.put("error", exception.getCause() != null ? exception.getCause().getMessage() : "Unknown error");
+                    response.put("message", "Something went wrong with the server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+                });
     }
 
-    @GetMapping("/edit/{idProduct}")
-    public String editProductPage(Model model, @PathVariable("idProduct") String productId) {
-        Product product = new Product(null);
-        product.setProductId(productId);
-        model.addAttribute("product", product);
-        return "editProduct";
-    }
-
-    @PostMapping("/edit/{idProduct}")
-    public String editProductPost(@ModelAttribute Product product, Model model, @PathVariable("idProduct") String productId) {
-        product.setProductId(productId);
-        service.edit(product);
-        return "redirect:../list";
+    @GetMapping("/{id}")
+    public CompletableFuture<ResponseEntity<?>> findById(@PathVariable("id") String id){
+        Map<String, Object> response = new HashMap<>();
+        return productService.findById(id)
+                .thenApply(product -> {
+                    if (product.isEmpty()){
+                        response.put("code", HttpStatus.NOT_FOUND.value());
+                        response.put("message", "Product with ID " + id + " not found.");
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                    }
+                    return ResponseEntity.ok(product.get());
+                })
+                .exceptionally(e -> {
+                    response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.put("error", e.getMessage());
+                    response.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                });
     }
 }
-
