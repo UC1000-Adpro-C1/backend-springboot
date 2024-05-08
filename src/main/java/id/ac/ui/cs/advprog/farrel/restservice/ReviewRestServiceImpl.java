@@ -1,5 +1,5 @@
 package id.ac.ui.cs.advprog.farrel.restservice;
-
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class ReviewRestServiceImpl implements ReviewRestService{
     }
 
     @Override
-    public Review getRestReviewById(String id){
+    public Review getRestReviewById(UUID id){
         for (Review review : retrieveRestAllReview()) {
             if (review.getReviewId().equals(id)) {
                 return review;
@@ -56,7 +56,7 @@ public class ReviewRestServiceImpl implements ReviewRestService{
     }
    
     @Override 
-    public void restDeleteReview(String id) {
+    public void restDeleteReview(UUID id) {
         try {
             reviewDb.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

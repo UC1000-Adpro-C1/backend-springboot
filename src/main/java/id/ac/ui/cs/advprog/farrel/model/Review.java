@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,8 +26,9 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Review{
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
-    private String reviewId;
+    private UUID reviewId;
 
     @NotNull
     @Size(max=100)

@@ -38,8 +38,9 @@ public class ReviewRestController {
         return reviewRestService.retrieveRestAllReview();
     }
 
+    @CrossOrigin("*")
     @GetMapping("/review/{id}")
-    private ResponseEntity<Review> retrieveReview(@PathVariable("id") String id) {
+    private ResponseEntity<Review> retrieveReview(@PathVariable("id")  UUID id) {
         try {
             var review = reviewRestService.getRestReviewById(id);
             return new ResponseEntity<>(review, HttpStatus.OK);
@@ -47,6 +48,7 @@ public class ReviewRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
         }
     }
+    @CrossOrigin("*")
     @PostMapping("/review/create")
     public ResponseEntity<Review> restAddReview(@RequestBody Review review, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
@@ -56,7 +58,7 @@ public class ReviewRestController {
             return new ResponseEntity<>(review, HttpStatus.CREATED);
         }
     }
-    // update review rest
+    @CrossOrigin("*")
     @PutMapping("/review")
     public ResponseEntity<Review> restUpdateReview(@RequestBody Review review, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
@@ -66,9 +68,9 @@ public class ReviewRestController {
            return new ResponseEntity<>(res, HttpStatus.OK);
         }
     }
-    
+    @CrossOrigin("*")
     @DeleteMapping("/delReview/{id}")
-    public ResponseEntity<String> restDeleteReview(@PathVariable("id") String id) {
+    public ResponseEntity<String> restDeleteReview(@PathVariable("id") UUID id) {
         try {
             reviewRestService.restDeleteReview(id);
             return ResponseEntity.ok("Review berhasil dihapus!");
@@ -76,7 +78,7 @@ public class ReviewRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review tidak ditemukan");
         }
     }
-
+    @CrossOrigin("*")
     @GetMapping("/reviewProduct/{id}")
     private List<Review> findReviewByProductId(@PathVariable("id") String id) {
         try {

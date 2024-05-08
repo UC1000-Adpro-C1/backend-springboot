@@ -1,5 +1,5 @@
 package id.ac.ui.cs.advprog.farrel.model;
-
+import java.util.UUID;
 
 public class TaggedReview extends ReviewDecorator {
     private String tag;
@@ -9,7 +9,7 @@ public class TaggedReview extends ReviewDecorator {
         this.review = review;
         this.tag = tag;
     }
-    public String getReviewId() {
+    public UUID getReviewId() {
         return review.getReviewId();
     }
 
@@ -29,6 +29,6 @@ public class TaggedReview extends ReviewDecorator {
         return review.getReview();
     }
     public String getTag() {
-        return this.getReview();
+        return this.tag;
     }
 }

@@ -14,9 +14,9 @@ import java.util.Map;
 public interface ReviewRestService {
     Review createRestReview(Review buku);
     List<Review> retrieveRestAllReview();
-    Review getRestReviewById(String id);
+    Review getRestReviewById(UUID id);
     Review updateRestReview(Review bukuFromDTO);
     List<Review> getRestReviewByProductId(String id);
-    void restDeleteReview(String id);
+    void restDeleteReview(UUID id);
 
 }

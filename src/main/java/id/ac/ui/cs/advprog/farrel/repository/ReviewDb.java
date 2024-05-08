@@ -10,6 +10,6 @@ import java.util.UUID;
 import java.util.List;
 
 @Repository
-public interface ReviewDb extends JpaRepository<Review, String> {
+public interface ReviewDb extends JpaRepository<Review, UUID> {
     List<Review> findByProductId(String productId);
 }
