@@ -4,11 +4,15 @@ import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.TopUpRepository;
 import id.ac.ui.cs.advprog.farrel.repository.UserRepository;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@EnableAsync
 public class TopUpServiceImpl implements TopUpService {
     @Autowired
     private TopUpRepository topUpRepository;
@@ -19,6 +23,13 @@ public class TopUpServiceImpl implements TopUpService {
         //tambahkan code kalo user belum masuk di repo user (==null)
         topUpRepository.create(topUp);
         return topUp;
+    }
+
+    @Override
+    @Async
+    public void topUpBalance(String topUpId, TopUp updatedTopUp) {
+    
+        updateTopUp(topUpId, updatedTopUp);
     }
 
     @Override
