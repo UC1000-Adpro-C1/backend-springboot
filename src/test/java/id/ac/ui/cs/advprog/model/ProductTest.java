@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import id.ac.ui.cs.advprog.farrel.model.Product;
-import id.ac.ui.cs.advprog.farrel.model.Product.ProductBuilder;
-
 import static org.junit.jupiter.api.Assertions.*;
 class ProductTest {
     Product product;
@@ -13,9 +11,11 @@ class ProductTest {
 
     @BeforeEach
     void SetUp(){
-        this.builder = new Product.ProductBuilder("Red Sweater", 12000);
+        this.builder = new Product.ProductBuilder("Sampo cap Bambang", 12000);
         this.product = builder.setStockQuantity(99)
-                .setDescription("The color of the sweater is red")
+                .setDescription("Sampo cap bambangg")
+                .setImageUrl("google.com")
+                .setSellerId("FakeId")
                 .build();
     }
     @Test
@@ -25,11 +25,11 @@ class ProductTest {
 
     @Test
     void testGetProductName(){
-        assertEquals("Red Sweater", this.product.getProductName());
+        assertEquals("Sampo cap Bambang", this.product.getProductName());
     }
     @Test
     void testGetProductDescription(){
-        assertEquals("The color of the sweater is red", this.product.getDescription());
+        assertEquals("Sampo cap bambangg", this.product.getDescription());
     }
     
     @Test
@@ -44,5 +44,9 @@ class ProductTest {
     void testGetProductStockIfNegative(){
         this.product.setStockQuantity(-1);
         assertEquals(0, this.product.getStockQuantity());
+    }
+    @Test
+    void testGetProductSeller(){
+        assertEquals("FakeId", this.product.getSellerId());
     }
 }
