@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.farrel.controller;
 
+import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.service.StaffRestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,18 @@ public class StaffRestController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Listing " + id + " not found");
         }
+    }
+
+    @GetMapping("/topups/pending")
+    public ResponseEntity<List<TopUp>> getPendingTopUps() {
+        List<TopUp> pendingTopUps = topUpService.findByStatus(TopUpStatus.PENDING.name());
+        return new ResponseEntity<>(pendingTopUps, HttpStatus.OK);
+    }
+
+    @GetMapping("/topups/non-pending")
+    public ResponseEntity<List<TopUp>> getNonPendingTopUps() {
+        List<TopUp> nonPendingTopUps = topUpService.findByStatusNot(TopUpStatus.PENDING.name());
+        return new ResponseEntity<>(nonPendingTopUps, HttpStatus.OK);
     }
 
     @PutMapping("/topup/{id}/update-status")
