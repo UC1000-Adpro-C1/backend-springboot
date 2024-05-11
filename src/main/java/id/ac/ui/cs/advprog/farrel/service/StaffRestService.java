@@ -37,6 +37,16 @@ public class StaffRestService implements StaffRestServiceInterface{
     }
 
     @Override
+    public List<TopUp> findByStatus(String status) {
+        return topUpRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<TopUp> findByStatusNot(String status) {
+        return topUpRepository.findByStatusNot(status);
+    }
+
+    @Override
     public TopUp updateStatus(UUID id, String newStatus) {
         TopUp topUp = findById(id);
 

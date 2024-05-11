@@ -9,5 +9,7 @@ public interface StaffRestServiceInterface {
     public TopUp createTopUp(TopUp topUp);
     public List<TopUp> findAll();
     public TopUp findById(UUID id);
+    public List<TopUp> findByStatus(String status);
+    public List<TopUp> findByStatusNot(String status);
     public TopUp updateStatus(UUID id, String newStatus);
 }
