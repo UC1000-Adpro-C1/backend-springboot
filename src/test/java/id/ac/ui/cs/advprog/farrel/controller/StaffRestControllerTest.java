@@ -1,86 +1,95 @@
-//package id.ac.ui.cs.advprog.farrel.controller;
-//
-//import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
-//import id.ac.ui.cs.advprog.farrel.model.Staff;
-//import id.ac.ui.cs.advprog.farrel.model.TopUp;
-//import id.ac.ui.cs.advprog.farrel.service.StaffRestService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.*;
-//
-//class StaffRestControllerTest {
-//
-//    @Mock
-//    private StaffRestService staffRestService;
-//
-//    @InjectMocks
-//    private StaffRestController staffRestController;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-//
-//    @Test
-//    void testUpdateTopUpStatus() {
-//        // Setup
-//        UUID id = UUID.randomUUID();
-//        TopUpStatus status = TopUpStatus.SUCCESS;
-//        Staff staff = new Staff();
-//        ResponseEntity<TopUp> expectedResponse = ResponseEntity.ok(new TopUp());
-//
-//        when(staffRestService.updateTopUpStatus(id, status, staff)).thenReturn(new TopUp());
-//
-//        // Execute
-//        ResponseEntity<TopUp> response = staffRestController.updateTopUpStatus(id, status, staff);
-//
-//        // Verify
-//        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
-//        verify(staffRestService, times(1)).updateTopUpStatus(id, status, staff);
-//    }
-//
-//    @Test
-//    void testGetPendingTopUps() {
-//        // Setup
-//        List<TopUp> topUps = new ArrayList<>();
-//        topUps.add(new TopUp());
-//        ResponseEntity<List<TopUp>> expectedResponse = ResponseEntity.ok(topUps);
-//
-//        when(staffRestService.getPendingTopUps()).thenReturn(topUps);
-//
-//        // Execute
-//        ResponseEntity<List<TopUp>> response = staffRestController.getPendingTopUps();
-//
-//        // Verify
-//        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
-//        verify(staffRestService, times(1)).getPendingTopUps();
-//    }
-//
-//    @Test
-//    void testGetNonPendingTopUps() {
-//        // Setup
-//        List<TopUp> topUps = new ArrayList<>();
-//        topUps.add(new TopUp());
-//        ResponseEntity<List<TopUp>> expectedResponse = ResponseEntity.ok(topUps);
-//
-//        when(staffRestService.getNonPendingTopUps()).thenReturn(topUps);
-//
-//        // Execute
-//        ResponseEntity<List<TopUp>> response = staffRestController.getNonPendingTopUps();
-//
-//        // Verify
-//        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
-//        verify(staffRestService, times(1)).getNonPendingTopUps();
-//    }
-//}
+package id.ac.ui.cs.advprog.farrel.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import id.ac.ui.cs.advprog.farrel.model.TopUp;
+import id.ac.ui.cs.advprog.farrel.service.StaffRestService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+public class StaffRestControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Mock
+    private StaffRestService topUpService;
+
+    @InjectMocks
+    private StaffRestController topUpController;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(topUpController).build();
+    }
+
+    @Test
+    public void testCreateTopUp() throws Exception {
+        TopUp topUp = new TopUp();
+        topUp.setAmount(10000);
+
+        when(topUpService.createTopUp(any(TopUp.class))).thenReturn(topUp);
+
+        mockMvc.perform(post("/api/topup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(topUp)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.amount").value(10000));
+    }
+
+    @Test
+    public void testGetAllTopUps() throws Exception {
+        TopUp topUp1 = new TopUp();
+        topUp1.setAmount(10000);
+
+        TopUp topUp2 = new TopUp();
+        topUp2.setAmount(20000);
+
+        when(topUpService.findAll()).thenReturn(Arrays.asList(topUp1, topUp2));
+
+        mockMvc.perform(get("/api/topups"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].amount").value(10000))
+                .andExpect(jsonPath("$[1].amount").value(20000));
+    }
+
+    @Test
+    public void testGetTopUpById() throws Exception {
+        UUID id = UUID.randomUUID();
+        TopUp topUp = new TopUp();
+        topUp.setAmount(10000);
+
+        when(topUpService.findById(id)).thenReturn(topUp);
+
+        mockMvc.perform(get("/api/topup/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.amount").value(10000));
+    }
+
+    @Test
+    public void testUpdateStatus() throws Exception {
+        UUID id = UUID.randomUUID();
+        TopUp topUp = new TopUp();
+        topUp.setAmount(10000);
+
+        when(topUpService.updateStatus(id, "SUCCESS")).thenReturn(topUp);
+
+        mockMvc.perform(put("/api/topup/{id}/update-status", id)
+                        .param("status", "SUCCESS"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.amount").value(10000));
+    }
+}
