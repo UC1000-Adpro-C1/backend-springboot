@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.farrel.model;
+
 import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
+import id.ac.ui.cs.advprog.farrel.strategy.TopUpSortingStrategy;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -38,7 +41,10 @@ public class TopUp {
     @Column(name = "userOwnerId")
     private String userOwnerId;
 
-    public TopUp (UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
+    @Setter
+    transient private TopUpSortingStrategy sortingStrategy;
+
+    public TopUp(UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
         this.topUpId = topUpId;
         this.transactionTime = transactionTime;
         this.status = TopUpStatus.PENDING.getValue();
@@ -58,5 +64,4 @@ public class TopUp {
             throw new IllegalArgumentException();
         }
     }
-
 }
