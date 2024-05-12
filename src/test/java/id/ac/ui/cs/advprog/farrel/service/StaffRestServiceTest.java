@@ -64,12 +64,12 @@ public class StaffRestServiceTest {
         topUp.setTopUpId(id);
         topUp.setAmount(10000);
         topUp.setStatus(TopUpStatus.PENDING.name());
-        when(topUpRepository.findById(String.valueOf(id))).thenReturn(Optional.of(topUp));
+        when(topUpRepository.findById((id))).thenReturn(Optional.of(topUp));
 
         TopUp foundTopUp = staffRestService.findById(id);
 
         assertEquals(topUp, foundTopUp);
-        verify(topUpRepository, times(1)).findById(String.valueOf(id));
+        verify(topUpRepository, times(1)).findById((id));
     }
 
     @Test
@@ -79,13 +79,13 @@ public class StaffRestServiceTest {
         topUp.setTopUpId(id);
         topUp.setAmount(10000);
         topUp.setStatus(TopUpStatus.PENDING.name());
-        when(topUpRepository.findById(String.valueOf(id))).thenReturn(Optional.of(topUp));
+        when(topUpRepository.findById((id))).thenReturn(Optional.of(topUp));
         when(topUpRepository.save(any())).thenReturn(topUp);
 
         TopUp updatedTopUp = staffRestService.updateStatus(id, TopUpStatus.SUCCESS.name());
 
         assertEquals(TopUpStatus.SUCCESS.name(), updatedTopUp.getStatus());
-        verify(topUpRepository, times(1)).findById(String.valueOf(id));
+        verify(topUpRepository, times(1)).findById((id));
         verify(topUpRepository, times(1)).save(any());
     }
 
@@ -96,12 +96,12 @@ public class StaffRestServiceTest {
         topUp.setTopUpId(id);
         topUp.setAmount(10000);
         topUp.setStatus(TopUpStatus.SUCCESS.name());
-        when(topUpRepository.findById(String.valueOf(id))).thenReturn(Optional.of(topUp));
+        when(topUpRepository.findById((id))).thenReturn(Optional.of(topUp));
 
         assertThrows(ResponseStatusException.class, () -> {
             staffRestService.updateStatus(id, TopUpStatus.FAILED.name());
         });
-        verify(topUpRepository, times(1)).findById(String.valueOf(id));
+        verify(topUpRepository, times(1)).findById((id));
         verify(topUpRepository, times(0)).save(any());
     }
 
@@ -112,12 +112,12 @@ public class StaffRestServiceTest {
         topUp.setTopUpId(id);
         topUp.setAmount(10000);
         topUp.setStatus(TopUpStatus.PENDING.name());
-        when(topUpRepository.findById(String.valueOf(id))).thenReturn(Optional.of(topUp));
+        when(topUpRepository.findById((id))).thenReturn(Optional.of(topUp));
 
         assertThrows(ResponseStatusException.class, () -> {
             staffRestService.updateStatus(id, "invalidStatus");
         });
-        verify(topUpRepository, times(1)).findById(String.valueOf(id));
+        verify(topUpRepository, times(1)).findById((id));
         verify(topUpRepository, times(0)).save(any());
     }
 }

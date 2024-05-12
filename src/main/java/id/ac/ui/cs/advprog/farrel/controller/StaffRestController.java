@@ -55,9 +55,15 @@ public class StaffRestController {
         return new ResponseEntity<>(nonPendingTopUps, HttpStatus.OK);
     }
 
-    @PutMapping("/topup/{id}/update-status")
-    public ResponseEntity<TopUp> updateStatus(@PathVariable("id") UUID id, @RequestParam("status") String newStatus) {
-        TopUp updatedTopUp = topUpService.updateStatus(id, newStatus);
+    @PutMapping("/topup/{id}/update-status/success")
+    public ResponseEntity<TopUp> updateStatusToSuccess(@PathVariable("id") UUID id) {
+        TopUp updatedTopUp = topUpService.updateStatus(id, TopUpStatus.SUCCESS.name());
+        return new ResponseEntity<>(updatedTopUp, HttpStatus.OK);
+    }
+
+    @PutMapping("/topup/{id}/update-status/failed")
+    public ResponseEntity<TopUp> updateStatusToFailed(@PathVariable("id") UUID id) {
+        TopUp updatedTopUp = topUpService.updateStatus(id, TopUpStatus.FAILED.name());
         return new ResponseEntity<>(updatedTopUp, HttpStatus.OK);
     }
 }

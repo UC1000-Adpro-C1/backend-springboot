@@ -41,9 +41,6 @@ public class TopUp {
     @Column(name = "userOwnerId")
     private String userOwnerId;
 
-    @Setter
-    transient private TopUpSortingStrategy sortingStrategy;
-
     public TopUp(UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
         this.topUpId = topUpId;
         this.transactionTime = transactionTime;

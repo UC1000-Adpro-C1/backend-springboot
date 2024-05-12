@@ -32,7 +32,7 @@ public class StaffRestService implements StaffRestServiceInterface{
 
     @Override
     public TopUp findById(UUID id) {
-        return topUpRepository.findById(String.valueOf(id))
+        return topUpRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TopUp with ID " + id + " not found"));
     }
 
