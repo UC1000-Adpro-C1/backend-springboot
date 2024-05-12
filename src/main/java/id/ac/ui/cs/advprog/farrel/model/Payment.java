@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
+import lombok.Getter;
+
+@Getter
 public class Payment {
     private String id;
     private long amount;
