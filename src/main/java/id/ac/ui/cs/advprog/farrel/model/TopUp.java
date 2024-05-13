@@ -38,7 +38,7 @@ public class TopUp {
     @Column(name = "topUpId", updatable = false, nullable = false)
     private UUID topUpId;
 
-    @Column(name = "userOwnerId")
+    @Column(name = "userOwnerId", updatable = false, nullable = false)
     private String userOwnerId;
 
     public TopUp(UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
