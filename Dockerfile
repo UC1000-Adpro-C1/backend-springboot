@@ -10,6 +10,7 @@ ENV JDBC_DATABASE_URL ${JDBC_DATABASE_URL}
 ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
-COPY ./build/libs/farrel-0.0.1-SNAPSHOT.jar /app
+RUN ls -al
+COPY ./farrel-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8080
 CMD ["java","-jar","farrel-0.0.1-SNAPSHOT.jar"]
