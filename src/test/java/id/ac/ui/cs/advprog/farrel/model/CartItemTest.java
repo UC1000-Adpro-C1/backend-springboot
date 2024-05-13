@@ -4,47 +4,50 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
+
 class CartItemTest {
+    private CartItem cartItem;
 
-    @Test
-    void testConstructor() {
-        // Arrange
-        String id = "item1";
-        String userId = "user1";
-        String cartId = "cart1";
-        String productId = "product1";
-        int quantity = 2;
-
-        // Act
-        CartItem cartItem = new CartItem(id, userId, cartId, productId, quantity);
-
-        // Assert
-        assertEquals(id, cartItem.getId());
-        assertEquals(userId, cartItem.getUserId());
-        assertEquals(cartId, cartItem.getCartId());
-        assertEquals(productId, cartItem.getProductId());
-        assertEquals(quantity, cartItem.getQuantity());
+    @BeforeEach
+    void setUp() {
+        cartItem = new CartItem("productId", 2, "cartId", 1000.0);
     }
 
     @Test
-    void testSetters() {
-        // Arrange
-        CartItem cartItem = new CartItem("item1", "user1", "cart1", "product1", 2);
+    void testGetItemId() {
+        assertNotNull(cartItem.getId());
+    }
+    
+    @Test
+    void testGetProductId() {
+        assertEquals("productId", cartItem.getProductId());
+    }
 
-        // Act
-        cartItem.setId("item2");
-        cartItem.setUserId("user2");
-        cartItem.setCartId("cart2");
-        cartItem.setProductId("product2");
+    @Test
+    void testGetQuantity() {
+        assertEquals(2, cartItem.getQuantity());
+    }
+
+    @Test
+    void testGetCartId() {
+        assertEquals("cartId", cartItem.getCartId());
+    }
+
+    @Test
+    void testGetPrice() {
+        assertEquals(1000.0, cartItem.getPrice());
+    }
+
+    @Test
+    void testSetQuantity() {
         cartItem.setQuantity(3);
-
-        // Assert
-        assertEquals("item2", cartItem.getId());
-        assertEquals("user2", cartItem.getUserId());
-        assertEquals("cart2", cartItem.getCartId());
-        assertEquals("product2", cartItem.getProductId());
         assertEquals(3, cartItem.getQuantity());
     }
 
-
+    @Test
+    void testSetQuantityWithNegativeValue() {
+        cartItem.setQuantity(-1);
+        assertEquals(0, cartItem.getQuantity());
+    }
 }
