@@ -2,7 +2,8 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
-  	id("org.sonarqube") version "4.4.1.3373"
+	jacoco
+  id("org.sonarqube") version "4.4.1.3373"
 }
 
 sonar {
@@ -37,6 +38,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
 	compileOnly("org.projectlombok:lombok")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	runtimeOnly("org.postgresql:postgresql")
+	implementation("jakarta.validation:jakarta.validation-api:3.0.1")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
@@ -44,6 +48,41 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.register<Test>("unitTest") {
+    description = "Runs unit tests."
+    group = "verification"
+
+    filter {
+        excludeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.register<Test>("functionalTest") {
+    description = "Runs functional tests."
+    group = "verification"
+
+    filter {
+        includeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.withType<Test>().configureEach{
+    useJUnitPlatform()
+}
+
+tasks.test {
+    filter {
+        excludeTestsMatching("*FunctionalTest")
+    }
+
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        html.required = true
+        xml.required = true
+    }
 }
