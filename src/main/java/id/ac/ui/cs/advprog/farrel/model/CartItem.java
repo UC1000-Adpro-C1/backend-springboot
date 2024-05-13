@@ -1,35 +1,29 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
 import lombok.Getter;
-import lombok.Setter;
+import java.util.UUID;
 
 @Getter
-@Setter
 public class CartItem {
-    private String id;
-    private String userId;
-    private String cartId;
+    private String itemId;
     private String productId;
+    private String cartId;
     private int quantity;
+    private double price;
 
-    public CartItem(String id, String userId, String cartId, String productId, int quantity) {
-        this.id = id;
-        this.userId = userId;
-        this.cartId = cartId;
+    public CartItem(String productId, int quantity, String cartId, double price) {
+        this.itemId = UUID.randomUUID().toString();
         this.productId = productId;
         this.quantity = quantity;
+        this.cartId = cartId;
+        this.price = price;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CartItem cartItem = (CartItem) o;
-        return id.equals(cartItem.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+    public void setQuantity(int quantity) {
+        if (quantity < 0) {
+            this.quantity = 0;
+        } else {
+            this.quantity = quantity;
+        }
     }
 }
