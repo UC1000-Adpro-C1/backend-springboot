@@ -16,7 +16,7 @@ class CartItemTest {
 
     @Test
     void testGetItemId() {
-        assertNotNull(cartItem.getId());
+        assertNotNull(cartItem.getItemId());
     }
     
     @Test
