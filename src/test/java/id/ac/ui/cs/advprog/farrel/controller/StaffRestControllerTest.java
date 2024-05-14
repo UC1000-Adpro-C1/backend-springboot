@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.farrel.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import id.ac.ui.cs.advprog.farrel.enums.PaymentStatus;
+import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.service.StaffRestService;
@@ -16,13 +17,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -87,7 +94,72 @@ public class StaffRestControllerTest {
     }
 
     @Test
-    public void testUpdateTopUpStatus() throws Exception {
+    public void testGetTopUpById_WhenNoSuchElementExceptionThrown() {
+        UUID id = UUID.randomUUID();
+        when(staffRestService.findTopUpById(id)).thenThrow(new NoSuchElementException());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> staffRestController.getTopUpById(id));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Id TopUp " + id + " not found", exception.getReason());
+        verify(staffRestService, times(1)).findTopUpById(id);
+    }
+
+    @Test
+    public void testGetPendingTopUps() {
+        List<TopUp> pendingTopUps = new ArrayList<TopUp>();
+
+        TopUp topUp1 = new TopUp();
+        topUp1.setTopUpId(UUID.randomUUID());
+        topUp1.setAmount(10000L);
+        topUp1.setStatus(TopUpStatus.PENDING.name());
+
+        TopUp topUp2 = new TopUp();
+        topUp2.setTopUpId(UUID.randomUUID());
+        topUp2.setAmount(10000L);
+        topUp2.setStatus(TopUpStatus.PENDING.name());
+
+        pendingTopUps.add(topUp1);
+        pendingTopUps.add(topUp2);
+
+        when(staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name())).thenReturn(pendingTopUps);
+
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getPendingTopUps();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(pendingTopUps, responseEntity.getBody());
+        verify(staffRestService, times(1)).findTopUpByStatus(TopUpStatus.PENDING.name());
+    }
+
+    @Test
+    public void testGetNonPendingTopUps() {
+        List<TopUp> nonPendingTopUps = new ArrayList<TopUp>();
+
+        TopUp topUp1 = new TopUp();
+        topUp1.setTopUpId(UUID.randomUUID());
+        topUp1.setAmount(25000L);
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+
+        TopUp topUp2 = new TopUp();
+        topUp2.setTopUpId(UUID.randomUUID());
+        topUp2.setAmount(20000L);
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+
+        nonPendingTopUps.add(topUp1);
+        nonPendingTopUps.add(topUp2);
+
+        when(staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name())).thenReturn(nonPendingTopUps);
+
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getNonPendingTopUps();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(nonPendingTopUps, responseEntity.getBody());
+        verify(staffRestService, times(1)).findTopUpByStatusNot(TopUpStatus.PENDING.name());
+    }
+
+    @Test
+    public void testUpdateTopUpStatusToSuccess() throws Exception {
         UUID id = UUID.randomUUID();
         TopUp topUp = new TopUp();
         topUp.setAmount(10000);
@@ -99,6 +171,23 @@ public class StaffRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.amount").value(10000));
     }
+
+    @Test
+    public void testUpdateTopUpStatusToFailed() {
+        UUID id = UUID.randomUUID();
+        TopUp updatedTopUp = new TopUp();
+        updatedTopUp.setTopUpId(id);
+        updatedTopUp.setAmount(10000L);
+        updatedTopUp.setStatus(TopUpStatus.FAILED.name());
+        when(staffRestService.updateTopUpStatus(id, TopUpStatus.FAILED.name())).thenReturn(updatedTopUp);
+
+        ResponseEntity<TopUp> responseEntity = staffRestController.updateTopUpStatusToFailed(id);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(updatedTopUp, responseEntity.getBody());
+        verify(staffRestService, times(1)).updateTopUpStatus(id, TopUpStatus.FAILED.name());
+    }
+
 
     @Test
     public void testCreatePayment() {
@@ -132,6 +221,19 @@ public class StaffRestControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(payment, response.getBody());
+    }
+
+    @Test
+    public void testGetPaymentById_WhenNoSuchElementExceptionThrown() {
+        UUID id = UUID.randomUUID();
+        when(staffRestService.findPaymentById(id)).thenThrow(new NoSuchElementException());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> staffRestController.getPaymentById(id));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Id Payment " + id + " not found", exception.getReason());
+        verify(staffRestService, times(1)).findPaymentById(id);
     }
 
     @Test
