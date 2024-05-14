@@ -2,7 +2,6 @@ package id.ac.ui.cs.advprog.farrel.service;
 
 import id.ac.ui.cs.advprog.farrel.model.CartItem;
 import id.ac.ui.cs.advprog.farrel.repository.CartItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ public class CartItemRestServiceImpl implements CartItemRestService {
 
     private final CartItemRepository cartItemRepository;
 
-    @Autowired
+    
     public CartItemRestServiceImpl(CartItemRepository cartItemRepository) {
         this.cartItemRepository = cartItemRepository;
     }
