@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 public class CartItemRestServiceTest {
 
@@ -44,7 +46,7 @@ public class CartItemRestServiceTest {
         int incrementQuantity = 2;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
         String itemId = cartItem.getItemId();
-        when(cartItemRepository.findById(itemId)).thenReturn(java.util.Optional.of(cartItem));
+        when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
         
         CartItem updatedCartItem = cartItemRestService.increaseQuantity(itemId, incrementQuantity);
@@ -61,7 +63,7 @@ public class CartItemRestServiceTest {
         int decrementQuantity = 1;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
         String itemId = cartItem.getItemId();
-        when(cartItemRepository.findById(itemId)).thenReturn(java.util.Optional.of(cartItem));
+        when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
 
         CartItem updatedCartItem = cartItemRestService.decreaseQuantity(itemId, decrementQuantity);
@@ -85,7 +87,7 @@ public class CartItemRestServiceTest {
         double newPrice = 15.0;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
         String itemId = cartItem.getItemId();
-        when(cartItemRepository.findById(itemId)).thenReturn(java.util.Optional.of(cartItem));
+        when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
 
         CartItem updatedCartItem = cartItemRestService.updatePrice(itemId, newPrice);
