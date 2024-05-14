@@ -39,7 +39,7 @@ public class StaffTopUpRepositoryTest {
 
         when(repository.findByStatus(status)).thenReturn(topUps);
 
-        List<TopUp> foundTopUps = service.findByStatus(status);
+        List<TopUp> foundTopUps = service.findTopUpByStatus(status);
 
         assertThat(foundTopUps.size()).isEqualTo(1);
         assertThat(foundTopUps.get(0).getStatus()).isEqualTo(status);
@@ -58,7 +58,7 @@ public class StaffTopUpRepositoryTest {
         topUps.add(topUp);
         when(repository.findByStatusNot(status)).thenReturn(topUps);
 
-        List<TopUp> foundTopUps = service.findByStatusNot(status);
+        List<TopUp> foundTopUps = service.findTopUpByStatusNot(status);
 
         assertThat(foundTopUps.size()).isEqualTo(1);
         assertThat(foundTopUps.get(0).getStatus()).isNotEqualTo(status);
