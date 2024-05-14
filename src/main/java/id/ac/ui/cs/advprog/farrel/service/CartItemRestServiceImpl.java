@@ -2,15 +2,17 @@ package id.ac.ui.cs.advprog.farrel.service;
 
 import id.ac.ui.cs.advprog.farrel.model.CartItem;
 import id.ac.ui.cs.advprog.farrel.repository.CartItemRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CartItemRestServiceImpl implements CartItemRestService {
 
     private final CartItemRepository cartItemRepository;
 
-    
+    @Autowired
     public CartItemRestServiceImpl(CartItemRepository cartItemRepository) {
         this.cartItemRepository = cartItemRepository;
     }
@@ -21,7 +23,7 @@ public class CartItemRestServiceImpl implements CartItemRestService {
     }
 
     @Override
-    public CartItem increaseQuantity(String itemId, int incrementQuantity) {
+    public CartItem increaseQuantity(UUID itemId, int incrementQuantity) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findById(itemId);
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
@@ -33,7 +35,7 @@ public class CartItemRestServiceImpl implements CartItemRestService {
     }
 
     @Override
-    public CartItem decreaseQuantity(String itemId, int decrementQuantity) {
+    public CartItem decreaseQuantity(UUID itemId, int decrementQuantity) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findById(itemId);
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
@@ -45,12 +47,12 @@ public class CartItemRestServiceImpl implements CartItemRestService {
     }
 
     @Override
-    public void deleteCartItem(String itemId) {
+    public void deleteCartItem(UUID itemId) {
         cartItemRepository.deleteById(itemId);
     }
 
     @Override
-    public CartItem updatePrice(String itemId, double newPrice) {
+    public CartItem updatePrice(UUID itemId, double newPrice) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findById(itemId);
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();

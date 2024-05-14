@@ -15,6 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 public class CartItemRestServiceTest {
@@ -45,7 +46,8 @@ public class CartItemRestServiceTest {
     void testIncreaseQuantity() {
         int incrementQuantity = 2;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
+        UUID itemId = cartItem.getItemId();
+
         when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
         
@@ -62,7 +64,7 @@ public class CartItemRestServiceTest {
     void testDecreaseQuantity() {
         int decrementQuantity = 1;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
+        UUID itemId = cartItem.getItemId();
         when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
 
@@ -77,7 +79,7 @@ public class CartItemRestServiceTest {
 
     @Test
     void testDeleteCartItem() {
-        String itemId = "itemId";
+        UUID itemId = UUID.randomUUID();
         cartItemRestService.deleteCartItem(itemId);
         verify(cartItemRepository, times(1)).deleteById(itemId);
     }
@@ -86,7 +88,7 @@ public class CartItemRestServiceTest {
     void testUpdatePrice() {
         double newPrice = 15.0;
         CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
+        UUID itemId = cartItem.getItemId();
         when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
 

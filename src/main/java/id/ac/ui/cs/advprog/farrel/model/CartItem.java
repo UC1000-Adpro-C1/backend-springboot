@@ -1,21 +1,35 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
+@Table(name = "cart_item")
 public class CartItem {
-    private String itemId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID itemId;
+
+    @Column(name = "product_id")
     private String productId;
+
+    @Column(name = "cart_id")
     private String cartId;
+
+    @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "price")
     private double price;
 
     public CartItem(String productId, int quantity, String cartId, double price) {
-        this.itemId = UUID.randomUUID().toString();
         this.productId = productId;
         this.quantity = quantity;
         this.cartId = cartId;
@@ -23,18 +37,10 @@ public class CartItem {
     }
 
     public void setQuantity(int quantity) {
-        if (quantity < 0) {
-            this.quantity = 0;
-        } else {
-            this.quantity = quantity;
-        }
+        this.quantity = Math.max(quantity, 0);
     }
 
     public void setPrice(double price) {
-        if (price < 0) {
-            this.price = 0;
-        } else {
-            this.price = price;
-        }
+        this.price = Math.max(price, 0);
     }
 }

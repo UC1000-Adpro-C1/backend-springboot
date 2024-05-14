@@ -13,9 +13,12 @@ import id.ac.ui.cs.advprog.farrel.model.CartItem;
 import id.ac.ui.cs.advprog.farrel.service.CartItemRestService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.UUID;
 
 public class CartItemRestControllerTest {
 
@@ -54,44 +57,39 @@ public class CartItemRestControllerTest {
     @Test
     void testIncreaseQuantity() throws Exception {
         int incrementQuantity = 2;
-        CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
         CartItem updatedCartItem = new CartItem("productId", 5, "cartId", 10.0);
-        updatedCartItem.setItemId(itemId);
-        when(cartItemRestService.increaseQuantity(itemId, incrementQuantity)).thenReturn(updatedCartItem);
+        
+        when(cartItemRestService.increaseQuantity(any(UUID.class), eq(incrementQuantity)))
+            .thenReturn(updatedCartItem);
 
-        mockMvc.perform(put("/api/cart-items/{itemId}/increase-quantity", itemId)
+        mockMvc.perform(put("/api/cart-items/{itemId}/increase-quantity", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"quantity\": " + incrementQuantity + "}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.itemId").value(itemId))
-                .andExpect(jsonPath("$.quantity").value(5));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.quantity").value(5));
 
-        verify(cartItemRestService, times(1)).increaseQuantity(itemId, incrementQuantity);
+        verify(cartItemRestService, times(1)).increaseQuantity(any(UUID.class), eq(incrementQuantity));
     }
 
     @Test
     void testDecreaseQuantity() throws Exception {
         int decrementQuantity = 1;
-        CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
         CartItem updatedCartItem = new CartItem("productId", 2, "cartId", 10.0);
-        updatedCartItem.setItemId(itemId);
-        when(cartItemRestService.decreaseQuantity(itemId, decrementQuantity)).thenReturn(updatedCartItem);
 
-        mockMvc.perform(put("/api/cart-items/{itemId}/decrease-quantity", itemId)
+        when(cartItemRestService.decreaseQuantity(any(UUID.class), eq(decrementQuantity))).thenReturn(updatedCartItem);
+
+        mockMvc.perform(put("/api/cart-items/{itemId}/decrease-quantity", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"quantity\": " + decrementQuantity + "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.itemId").value(itemId))
                 .andExpect(jsonPath("$.quantity").value(2));
 
-        verify(cartItemRestService, times(1)).decreaseQuantity(itemId, decrementQuantity);
+        verify(cartItemRestService, times(1)).decreaseQuantity(any(UUID.class), eq(decrementQuantity));
     }
 
     @Test
     void testDeleteCartItem() throws Exception {
-        String itemId = "itemId";
+        UUID itemId = UUID.randomUUID();
 
         mockMvc.perform(delete("/api/cart-items/{itemId}", itemId))
                 .andExpect(status().isNoContent());
@@ -102,19 +100,16 @@ public class CartItemRestControllerTest {
     @Test
     void testUpdatePrice() throws Exception {
         double newPrice = 15.0;
-        CartItem cartItem = new CartItem("productId", 2, "cartId", 10.0);
-        String itemId = cartItem.getItemId();
         CartItem updatedCartItem = new CartItem("productId", 2, "cartId", newPrice);
-        updatedCartItem.setItemId(itemId);
-        when(cartItemRestService.updatePrice(itemId, newPrice)).thenReturn(updatedCartItem);
 
-        mockMvc.perform(put("/api/cart-items/{itemId}/update-price", itemId)
+        when(cartItemRestService.updatePrice(any(UUID.class), eq(newPrice))).thenReturn(updatedCartItem);
+
+        mockMvc.perform(put("/api/cart-items/{itemId}/update-price", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"price\": " + newPrice + "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.itemId").value(itemId))
                 .andExpect(jsonPath("$.price").value(newPrice));
 
-        verify(cartItemRestService, times(1)).updatePrice(itemId, newPrice);
+        verify(cartItemRestService, times(1)).updatePrice(any(UUID.class), eq(newPrice));
     }
 }
