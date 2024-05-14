@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SortByTransactionTimeTest {
+public class SortTopUpByTransactionTimeTest {
 
     @Test
     public void testSortByTransactionTime() {
