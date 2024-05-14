@@ -25,7 +25,7 @@ public class SortByTransactionTimeTest {
         topUpList.add(topUp2);
         topUpList.add(topUp3);
 
-        SortByTransactionTime sortByTransactionTime = new SortByTransactionTime();
+        SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
 
         sortByTransactionTime.sort(topUpList);
 
@@ -37,7 +37,7 @@ public class SortByTransactionTimeTest {
     @Test
     public void testSortByTransactionTimeEmptyList() {
         List<TopUp> topUpList = new ArrayList<>();
-        SortByTransactionTime sortByTransactionTime = new SortByTransactionTime();
+        SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
 
         sortByTransactionTime.sort(topUpList);
 
