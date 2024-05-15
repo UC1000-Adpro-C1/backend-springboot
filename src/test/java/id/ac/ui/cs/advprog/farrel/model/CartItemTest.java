@@ -1,17 +1,22 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
+
+import java.util.UUID;
 
 class CartItemTest {
     private CartItem cartItem;
+    private UUID itemId;
 
     @BeforeEach
     void setUp() {
         cartItem = new CartItem("productId", 2, "cartId", 1000.0);
+        itemId = UUID.randomUUID();
+        cartItem.setItemId(itemId);
     }
 
     @Test
