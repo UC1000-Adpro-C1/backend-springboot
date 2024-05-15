@@ -9,5 +9,6 @@ import lombok.Setter;
 public class User {
     private String name;
     private String userId;
+    private long balance;
     private ArrayList<TopUp> userTopUpList = new ArrayList<TopUp>();
 }
