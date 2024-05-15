@@ -50,7 +50,6 @@ public class StaffRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(staffRestController).build();
     }
 
-
     @Test
     public void testGetAllTopUps() throws Exception {
         TopUp topUp1 = new TopUp();
