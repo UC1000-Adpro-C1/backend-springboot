@@ -1,47 +1,70 @@
 package id.ac.ui.cs.advprog.farrel.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.service.TopUpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-@Controller
-@RequestMapping("/topup")
+import java.util.List;
+import java.util.UUID;
+import java.util.NoSuchElementException;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TopUpController {
+
     @Autowired
     private TopUpService topUpService;
 
-    @GetMapping("/create")
-    public String createProductPage(Model model) {
-        TopUp topUp = new TopUp(null, null, 0, null, null);
-        model.addAttribute("topUp", topUp);
-        return "createTopUp";
+    @PostMapping("/topup")
+    public ResponseEntity<TopUp> createTopUp(@RequestBody TopUp topUp) {
+        TopUp createdTopUp = topUpService.createTopUp(topUp);
+        return new ResponseEntity<>(createdTopUp, HttpStatus.CREATED);
     }
 
-    @PostMapping("/create")
-    public String createProductPost(@ModelAttribute TopUp topUp, Model model) {
-        topUpService.create(topUp);
-        return "";
+    @GetMapping("/topups")
+    public ResponseEntity<List<TopUp>> getAllTopUps() {
+        List<TopUp> allTopUps = topUpService.findAllTopUps();
+        return new ResponseEntity<>(allTopUps, HttpStatus.OK);
     }
 
-    @GetMapping("/update/{topUpId}")
-    public String editProductListPage(Model model, @PathVariable("topUpId") String topUpId) {
-        TopUp topUp = topUpService.findTopUp(topUpId);
-        model.addAttribute("topUp", topUp);
-        return "topup_update";
+    @GetMapping("/topup/{id}")
+    public ResponseEntity<TopUp> getTopUpById(@PathVariable("id") UUID id) {
+        try {
+            TopUp topUp = topUpService.findTopUpById(id);
+            return new ResponseEntity<>(topUp, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id TopUp " + id + " not found");
+        }
     }
 
-    @PostMapping("/update/")
-    public String updateTopUpPost(@ModelAttribute TopUp updatedTopUp, Model model){
-        topUpService.updateTopUp(updatedTopUp.getTopUpId(), updatedTopUp);
-        return "";
+    @GetMapping("/topups/pending")
+    public ResponseEntity<List<TopUp>> getPendingTopUps() {
+        List<TopUp> pendingTopUps = topUpService.findTopUpByStatus(TopUpStatus.PENDING.name());
+        return new ResponseEntity<>(pendingTopUps, HttpStatus.OK);
     }
-    
+
+    @GetMapping("/topups/non-pending")
+    public ResponseEntity<List<TopUp>> getNonPendingTopUps() {
+        List<TopUp> nonPendingTopUps = topUpService.findTopUpByStatusNot(TopUpStatus.PENDING.name());
+        return new ResponseEntity<>(nonPendingTopUps, HttpStatus.OK);
+    }
+
+    @PutMapping("/topup/{id}/update-status/success")
+    public ResponseEntity<TopUp> updateTopUpStatusToSuccess(@PathVariable("id") UUID id) {
+        TopUp updatedTopUp = topUpService.updateTopUpStatus(id, TopUpStatus.SUCCESS.name());
+        return new ResponseEntity<>(updatedTopUp, HttpStatus.OK);
+    }
+
+    @PutMapping("/topup/{id}/update-status/failed")
+    public ResponseEntity<TopUp> updateTopUpStatusToFailed(@PathVariable("id") UUID id) {
+        TopUp updatedTopUp = topUpService.updateTopUpStatus(id, TopUpStatus.FAILED.name());
+        return new ResponseEntity<>(updatedTopUp, HttpStatus.OK);
+    }
+
 }

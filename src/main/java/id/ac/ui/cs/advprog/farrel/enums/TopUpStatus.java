@@ -1,13 +1,11 @@
 package id.ac.ui.cs.advprog.farrel.enums;
-
 import lombok.Getter;
 
 @Getter
 public enum TopUpStatus {
     PENDING("PENDING"),
-    DIBATALKAN("DIBATALKAN"),
-    DITERIMA("DITERIMA"),
-    DITOLAK("DITOLAK");
+    SUCCESS("SUCCESS"),
+    FAILED("FAILED");
 
     private final String value;
 
@@ -17,10 +15,13 @@ public enum TopUpStatus {
 
     public static boolean contains(String param) {
         for (TopUpStatus topUpStatus : TopUpStatus.values()) {
-            if (topUpStatus.name().equals(param)) {
+            if (topUpStatus.getValue().equals(param)) {
                 return true;
             }
         }
+
         return false;
     }
+
+
 }

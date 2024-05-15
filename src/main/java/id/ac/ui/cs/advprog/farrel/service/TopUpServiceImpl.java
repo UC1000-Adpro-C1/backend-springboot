@@ -1,45 +1,67 @@
 package id.ac.ui.cs.advprog.farrel.service;
 
+import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.TopUpRepository;
-import id.ac.ui.cs.advprog.farrel.repository.UserRepository;
-
-
+import id.ac.ui.cs.advprog.farrel.service.TopUpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.UUID;
 
 @Service
-@EnableAsync
-public class TopUpServiceImpl implements TopUpService {
+public class TopUpServiceImpl implements TopUpService{
+
     @Autowired
     private TopUpRepository topUpRepository;
-    private UserRepository userRepository;
 
     @Override
-    public TopUp create(TopUp topUp) {
-        //tambahkan code kalo user belum masuk di repo user (==null)
-        topUpRepository.create(topUp);
+    public TopUp createTopUp(TopUp topUp) {
+        topUp.setTopUpId(UUID.randomUUID());
+        topUp.setStatus(TopUpStatus.PENDING.name());
+        topUpRepository.save(topUp);
         return topUp;
     }
 
     @Override
-    @Async
-    public void topUpBalance(String topUpId, TopUp updatedTopUp) {
-    
-        updateTopUp(topUpId, updatedTopUp);
+    public List<TopUp> findAllTopUps() {
+        return topUpRepository.findAll();
     }
 
     @Override
-    public void updateTopUp(String topUpId, TopUp updatedTopUp) {
-        topUpRepository.updateTopUp(updatedTopUp);
-        userRepository.updateTopUpStatus(updatedTopUp);
+    public TopUp findTopUpById(UUID id) {
+        return topUpRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TopUp with ID " + id + " not found"));
     }
 
     @Override
-    public TopUp findTopUp(String topUpId) {
-        return topUpRepository.findTopUp(topUpId);
+    public List<TopUp> findTopUpByStatus(String status) {
+        return topUpRepository.findByStatus(status);
     }
+
+    @Override
+    public List<TopUp> findTopUpByStatusNot(String status) {
+        return topUpRepository.findByStatusNot(status);
+    }
+
+    @Override
+    public TopUp updateTopUpStatus(UUID id, String newStatus) {
+        TopUp topUp = findTopUpById(id);
+
+        if (!topUp.getStatus().equals(TopUpStatus.PENDING.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot update status of non-pending TopUp");
+        }
+
+        if (!TopUpStatus.contains(newStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status value");
+        }
+
+        topUp.setStatus(newStatus);
+        topUpRepository.save(topUp);
+        return topUp;
+    }
+
 }
