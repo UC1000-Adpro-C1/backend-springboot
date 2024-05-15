@@ -12,4 +12,5 @@ public interface SellControllerService {
     CompletableFuture<Void> delete(String id);
     CompletableFuture<Optional<Product>> findById(String id);
     CompletableFuture<Product> update(Product listing);
+    CompletableFuture<List<Product>> findBySellerId(String id);
 }

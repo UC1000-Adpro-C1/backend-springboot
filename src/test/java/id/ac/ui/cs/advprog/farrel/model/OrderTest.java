@@ -12,20 +12,12 @@ public class OrderTest {
 
     @BeforeEach
     void SetUp(){
-        Product.ProductBuilder ProductBuilder = new Product.ProductBuilder("Red Sweater", 12000);
-        this.product = ProductBuilder.build();
-        this.orderBuilder = new Order.OrderBuilder(product.getProductId());
-        this.order = orderBuilder.setBuyerId("FakeBuyerId")
-                .build();
+        this.orderBuilder = new Order.OrderBuilder("FakeBuyerId");
+        this.order = orderBuilder.build();
     }
     @Test
     void testGetOrderId(){
         assertNotNull(this.order.getId());
-    }
-
-    @Test
-    void testGetOrderItemId(){
-        assertEquals(product.getProductId(), this.order.getItemId());
     }
 
     @Test

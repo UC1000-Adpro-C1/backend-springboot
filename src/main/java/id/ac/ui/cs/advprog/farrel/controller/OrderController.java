@@ -20,7 +20,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody Order order){
         Map<String, Object> res = new HashMap<>();
         try{

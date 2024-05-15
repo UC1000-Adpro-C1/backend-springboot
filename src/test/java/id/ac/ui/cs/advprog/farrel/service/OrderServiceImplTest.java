@@ -47,6 +47,7 @@ public class OrderServiceImplTest {
         Order savedOrder = orderList.getFirst();
         assertEquals(order.getId(), savedOrder.getId());
         assertEquals(order.getStatus(), savedOrder.getStatus());
+        assertEquals(order.getStatus(), savedOrder.getStatus());
         assertEquals(order.getBuyerId(), savedOrder.getBuyerId());
     }
 

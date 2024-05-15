@@ -50,4 +50,9 @@ public class SellControllerServiceImpl implements SellControllerService {
 
         return CompletableFuture.completedFuture(productRepository.findById(id));
     }
+    @Override
+    @Async
+    public CompletableFuture<List<Product>> findBySellerId(String id){
+        return CompletableFuture.completedFuture(productRepository.findBySellerId(id));
+    }
 }

@@ -16,10 +16,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private String id;
-    @Column(name = "item_id", nullable = false)
-    private String itemId;
-    @Column(name = "status", nullable = false)
+
+    @Column(name="status")
     private String status;
+
     @Column(name = "buyer_id", nullable = false)
     private String buyerId;
 
@@ -28,7 +28,6 @@ public class Order {
     }
     public Order(Order.OrderBuilder builder){
         this.id = UUID.randomUUID().toString();
-        this.itemId = builder.itemId;
         this.status = builder.status;
         this.buyerId = builder.buyerId;
     }
@@ -43,20 +42,14 @@ public class Order {
 
     public static class OrderBuilder {
         // Required parameters
-        private String itemId;
+        private String buyerId;
 
         // Optional parameters
         private String status;
-        private String buyerId;
 
-        public OrderBuilder(String itemId) {
-            this.itemId = itemId;
+        public OrderBuilder(String buyerId) {
+            this.buyerId = buyerId;
             this.status = OrderStatus.WAITING_PAYMENT.getValue();
-        }
-
-        public Order.OrderBuilder setStatus(String status) {
-            this.status = status;
-            return this;
         }
 
         public Order.OrderBuilder setBuyerId(String buyerId) {

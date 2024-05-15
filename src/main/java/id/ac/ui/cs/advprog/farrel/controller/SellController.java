@@ -100,4 +100,23 @@ public class SellController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
                 });
     }
+    @GetMapping("/seller/{id}")
+    public CompletableFuture<ResponseEntity<?>> findBySellerId(@PathVariable("id") String id){
+        Map<String, Object> response = new HashMap<>();
+        return productService.findBySellerId(id)
+                .thenApply(product -> {
+                    if (product.isEmpty()){
+                        response.put("code", HttpStatus.NOT_FOUND.value());
+                        response.put("message", "Listing with ID " + id + " not found.");
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                    }
+                    return ResponseEntity.ok(product);
+                })
+                .exceptionally(e -> {
+                    response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.put("error", e.getMessage());
+                    response.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                });
+    }
 }
