@@ -2,60 +2,74 @@ package id.ac.ui.cs.advprog.farrel.model;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import id.ac.ui.cs.advprog.farrel.model.state.CheckedOutCartState;
+
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.UUID;
+
 class CartTest {
+    private Cart cart;
+    private CartItem cartItem;
+    private UUID cartItemId;
+    private UUID cartId;
+
+    @BeforeEach
+    void setUp() {
+        cart = new Cart();
+        cartId = UUID.randomUUID();
+        cart.setCartId(cartId);
+
+        cartItem = new CartItem("productId", 2, cart.getCartId().toString(), 1000.0);
+        cartItemId = UUID.randomUUID();
+        cartItem.setItemId(cartItemId);
+    }
 
     @Test
-    void testConstructor() {
-        // Arrange
-        String id = "cart1";
-        String userId = "user1";
-
-        // Act
-        Cart cart = new Cart(id, userId);
-
-        // Assert
-        assertEquals(id, cart.getId());
-        assertEquals(userId, cart.getUserId());
-        assertTrue(cart.getItems().isEmpty());
+    void testGetCartId() {
+        assertNotNull(cart.getCartId());
     }
 
     @Test
     void testAddItem() {
-        // Arrange
-        Cart cart = new Cart("cart1", "user1");
-        CartItem item1 = new CartItem("item1", "user1", "cart1", "product1", 2);
-        CartItem item2 = new CartItem("item2", "user1", "cart1", "product2", 3);
-
-        // Act
-        cart.addItem(item1);
-        cart.addItem(item2);
-
-        // Assert
-        assertEquals(2, cart.getItems().size());
-        assertTrue(cart.getItems().contains(item1));
-        assertTrue(cart.getItems().contains(item2));
+        cart.addItem(cartItem);
+        assertFalse(cart.getItems().isEmpty());
+        assertEquals(1, cart.getItems().size());
     }
 
     @Test
     void testRemoveItem() {
-        // Arrange
-        Cart cart = new Cart("cart1", "user1");
-        CartItem item1 = new CartItem("item1", "user1", "cart1", "product1", 2);
-        CartItem item2 = new CartItem("item2", "user1", "cart1", "product2", 3);
-        cart.addItem(item1);
-        cart.addItem(item2);
+        cart.addItem(cartItem);
+        cart.removeItem(cartItem.getItemId());
+        assertTrue(cart.getItems().isEmpty());
+    }
 
-        // Act
-        cart.removeItem(item1);
+    @Test
+    void testInitialState() {
+        assertTrue(cart.getItems().isEmpty());
+        assertNotNull(cart.getState());
+    }
 
-        // Assert
-        assertEquals(1, cart.getItems().size());
-        assertFalse(cart.getItems().contains(item1));
-        assertTrue(cart.getItems().contains(item2));
+    @Test
+    void testCheckout() {
+        cart.addItem(cartItem);
+        cart.checkout();
+        assertTrue(cart.getState() instanceof CheckedOutCartState);
+    }
+
+    @Test
+    void testAddItemInCheckedOutState() {
+        cart.addItem(cartItem);
+        cart.checkout();
+        assertThrows(IllegalStateException.class, () -> cart.addItem(new CartItem("productId2", 1, cart.getCartId().toString(), 500.0)));
+    }
+
+    @Test
+    void testRemoveItemInCheckedOutState() {
+        cart.addItem(cartItem);
+        cart.checkout();
+        assertThrows(IllegalStateException.class, () -> cart.removeItem(cartItem.getItemId()));
     }
 }
