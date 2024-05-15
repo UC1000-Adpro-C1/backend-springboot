@@ -18,10 +18,10 @@ sonar {
 
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
-
 
 configurations {
 	compileOnly {
@@ -47,6 +47,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
+
 
 tasks.register<Test>("unitTest") {
     description = "Runs unit tests."
