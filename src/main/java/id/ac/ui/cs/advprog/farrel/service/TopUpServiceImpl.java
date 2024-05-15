@@ -38,6 +38,10 @@ public class TopUpServiceImpl implements TopUpService{
     }
 
     @Override
+    public List<TopUp> findTopUpByUserId(String userOwnerId) {
+        return topUpRepository.findByUserId(userOwnerId);
+    }
+    @Override
     public List<TopUp> findTopUpByStatus(String status) {
         return topUpRepository.findByStatus(status);
     }

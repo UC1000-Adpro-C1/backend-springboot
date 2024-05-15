@@ -42,8 +42,13 @@ public class TopUpController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id TopUp " + id + " not found");
         }
     }
+    @GetMapping("/topups/{userOwnerId}")
+    public ResponseEntity<List<TopUp>> getTopUpByUserId(@PathVariable("userOwnerId") String userOwnerId) {
+        List<TopUp> userTopUps = topUpService.findTopUpByUserId(userOwnerId);
+        return new ResponseEntity<>(userTopUps, HttpStatus.OK);
+    }
 
-    @GetMapping("/topups/pending")
+            @GetMapping("/topups/pending")
     public ResponseEntity<List<TopUp>> getPendingTopUps() {
         List<TopUp> pendingTopUps = topUpService.findTopUpByStatus(TopUpStatus.PENDING.name());
         return new ResponseEntity<>(pendingTopUps, HttpStatus.OK);

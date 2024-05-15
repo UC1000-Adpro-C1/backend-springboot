@@ -16,4 +16,7 @@ public interface TopUpRepository extends JpaRepository<TopUp, UUID> {
 
     @Query("SELECT t FROM TopUp t WHERE t.status <> :status")
     List<TopUp> findByStatusNot(@Param("status") String status);
+
+    @Query("SELECT t FROM TopUp t WHERE t.userOwnerId = :userOwnerId")
+    List<TopUp> findByUserId(@Param("userOwnerId") String userOwnerId);
 }
