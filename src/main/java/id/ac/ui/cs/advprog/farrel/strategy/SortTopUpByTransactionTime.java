@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SortByTransactionTime implements TopUpSortingStrategy {
+public class SortTopUpByTransactionTime implements TopUpSortingStrategy {
     @Override
     public void sort(List<TopUp> topUpList) {
         Collections.sort(topUpList, Comparator.comparing(TopUp::getTransactionTime));
