@@ -23,12 +23,6 @@ public class StaffRestController {
     @Autowired
     private StaffRestService staffRestService;
 
-    @PostMapping("/topup")
-    public ResponseEntity<TopUp> createTopUp(@RequestBody TopUp topUp) {
-        TopUp createdTopUp = staffRestService.createTopUp(topUp);
-        return new ResponseEntity<>(createdTopUp, HttpStatus.CREATED);
-    }
-
     @GetMapping("/topups")
     public ResponseEntity<List<TopUp>> getAllTopUps() {
         List<TopUp> allTopUps = staffRestService.findAllTopUps();
