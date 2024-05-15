@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.model;
 
 import id.ac.ui.cs.advprog.farrel.enums.TopUpStatus;
+import id.ac.ui.cs.advprog.farrel.strategy.TopUpSortingStrategy;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,9 +38,8 @@ public class TopUp {
     @Column(name = "topUpId", updatable = false, nullable = false)
     private UUID topUpId;
 
-    @Column(name = "userOwnerId")
+    @Column(name = "userOwnerId", updatable = false, nullable = false)
     private String userOwnerId;
-
 
     public TopUp(UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
         this.topUpId = topUpId;
