@@ -17,7 +17,7 @@ public class SellController {
     @Autowired
     SellControllerService productService;
 
-    @PostMapping
+    @PostMapping("/create")
     public CompletableFuture<ResponseEntity<Map<String, Object>>> createProduct(@RequestBody Product product){
         Map<String, Object> res = new HashMap<>();
         return productService.create(product)
@@ -34,13 +34,13 @@ public class SellController {
                 });
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public CompletableFuture<ResponseEntity<Map<String, Object>>> deleteProduct(@PathVariable("id") String id){
         Map<String, Object> res = new HashMap<>();
         return productService.delete(id)
                 .thenApply(result -> {
                     res.put("code", HttpStatus.OK.value());
-                    res.put("message", "Listing Deleted Successfully");
+                    res.put("message", "Product Deleted Successfully");
                     return ResponseEntity.status(HttpStatus.OK).body(res);
                 })
                 .exceptionally(e -> {

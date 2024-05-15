@@ -14,10 +14,13 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
     private String id;
-
+    @Column(name = "item_id", nullable = false)
     private String itemId;
+    @Column(name = "status", nullable = false)
     private String status;
+    @Column(name = "buyer_id", nullable = false)
     private String buyerId;
 
     public Order(){
