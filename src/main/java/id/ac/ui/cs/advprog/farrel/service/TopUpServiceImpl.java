@@ -27,11 +27,6 @@ public class TopUpServiceImpl implements TopUpService{
     }
 
     @Override
-    public List<TopUp> findAllTopUps() {
-        return topUpRepository.findAll();
-    }
-
-    @Override
     public TopUp findTopUpById(UUID id) {
         return topUpRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TopUp with ID " + id + " not found"));
@@ -40,32 +35,6 @@ public class TopUpServiceImpl implements TopUpService{
     @Override
     public List<TopUp> findTopUpByUserId(String userOwnerId) {
         return topUpRepository.findByUserId(userOwnerId);
-    }
-    @Override
-    public List<TopUp> findTopUpByStatus(String status) {
-        return topUpRepository.findByStatus(status);
-    }
-
-    @Override
-    public List<TopUp> findTopUpByStatusNot(String status) {
-        return topUpRepository.findByStatusNot(status);
-    }
-
-    @Override
-    public TopUp updateTopUpStatus(UUID id, String newStatus) {
-        TopUp topUp = findTopUpById(id);
-
-        if (!topUp.getStatus().equals(TopUpStatus.PENDING.name())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot update status of non-pending TopUp");
-        }
-
-        if (!TopUpStatus.contains(newStatus)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status value");
-        }
-
-        topUp.setStatus(newStatus);
-        topUpRepository.save(topUp);
-        return topUp;
     }
 
     @Override

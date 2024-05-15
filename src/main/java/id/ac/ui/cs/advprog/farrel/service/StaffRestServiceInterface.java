@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface StaffRestServiceInterface {
-    public TopUp createTopUp(TopUp topUp);
     public List<TopUp> findAllTopUps();
     public TopUp findTopUpById(UUID id);
     public List<TopUp> findTopUpByStatus(String status);

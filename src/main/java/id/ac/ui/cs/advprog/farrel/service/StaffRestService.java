@@ -24,14 +24,6 @@ public class StaffRestService implements StaffRestServiceInterface{
     private StaffPaymentRepository paymentRepository;
 
     @Override
-    public TopUp createTopUp(TopUp topUp) {
-        topUp.setTopUpId(UUID.randomUUID());
-        topUp.setStatus(TopUpStatus.PENDING.name());
-        topUpRepository.save(topUp);
-        return topUp;
-    }
-
-    @Override
     public List<TopUp> findAllTopUps() {
         return topUpRepository.findAll();
     }
