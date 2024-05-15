@@ -32,4 +32,19 @@ public class TopUpController {
         List<TopUp> userTopUps = topUpService.findTopUpByUserId(userOwnerId);
         return new ResponseEntity<>(userTopUps, HttpStatus.OK);
     }
+
+    @PostMapping("/topups/cancel/{topUpId}")
+    public ResponseEntity<Void> cancelTopUp(@PathVariable("topUpId") UUID topUpId) {
+        try {
+            TopUp topUp = topUpService.findTopUpById(topUpId);
+            if (topUp.getStatus().equals(TopUpStatus.PENDING.name())) {
+                topUpService.deleteTopUp(topUpId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only PENDING top-ups can be cancelled.");
+            }
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Top-up not found.", e);
+        }
+    }
 }
