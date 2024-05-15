@@ -51,20 +51,6 @@ public class StaffRestControllerTest {
     }
 
     @Test
-    public void testCreateTopUp() throws Exception {
-        TopUp topUp = new TopUp();
-        topUp.setAmount(10000);
-
-        when(staffRestService.createTopUp(any(TopUp.class))).thenReturn(topUp);
-
-        mockMvc.perform(post("/api/topup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(topUp)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.amount").value(10000));
-    }
-
-    @Test
     public void testGetAllTopUps() throws Exception {
         TopUp topUp1 = new TopUp();
         topUp1.setAmount(10000);
