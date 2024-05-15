@@ -2,7 +2,9 @@ package id.ac.ui.cs.advprog.farrel.model;
 
 import org.junit.jupiter.api.Test;
 
+import id.ac.ui.cs.advprog.farrel.model.state.ActiveCartState;
 import id.ac.ui.cs.advprog.farrel.model.state.CheckedOutCartState;
+import id.ac.ui.cs.advprog.farrel.model.state.EmptyCartState;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -53,6 +55,26 @@ class CartTest {
     }
 
     @Test
+    void testStateTransitionToActive() {
+        cart.addItem(cartItem);
+        assertTrue(cart.getState() instanceof ActiveCartState);
+    }
+
+    @Test
+    void testStateTransitionToCheckedOut() {
+        cart.addItem(cartItem);
+        cart.checkout();
+        assertTrue(cart.getState() instanceof CheckedOutCartState);
+    }
+
+    @Test
+    void testStateTransitionToEmptyFromActive() {
+        cart.addItem(cartItem);
+        cart.removeItem(cartItem.getItemId());
+        assertTrue(cart.getState() instanceof EmptyCartState);
+    }
+
+    @Test
     void testCheckout() {
         cart.addItem(cartItem);
         cart.checkout();
@@ -71,5 +93,10 @@ class CartTest {
         cart.addItem(cartItem);
         cart.checkout();
         assertThrows(IllegalStateException.class, () -> cart.removeItem(cartItem.getItemId()));
+    }
+
+    @Test
+    void testCheckoutFromEmptyCart() {
+        assertThrows(IllegalStateException.class, () -> cart.checkout());
     }
 }
