@@ -13,4 +13,5 @@ public interface TopUpService {
     public List<TopUp> findTopUpByStatus(String status);
     public List<TopUp> findTopUpByStatusNot(String status);
     public TopUp updateTopUpStatus(UUID id, String newStatus);
+    public void deleteTopUp(UUID id);
 }

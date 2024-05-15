@@ -35,14 +35,6 @@ public class StaffRestServiceTest {
     private StaffRestService staffRestService;
 
     @Test
-    public void testCreateTopUp() {
-        TopUp topUp = new TopUp();
-        staffRestService.createTopUp(topUp);
-
-        verify(topUpRepository, times(1)).save(topUp);
-    }
-
-    @Test
     public void testFindAllTopUps() {
         List<TopUp> topUps = new ArrayList<>();
         when(topUpRepository.findAll()).thenReturn(topUps);

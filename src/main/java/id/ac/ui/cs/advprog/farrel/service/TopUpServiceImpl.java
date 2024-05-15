@@ -68,4 +68,15 @@ public class TopUpServiceImpl implements TopUpService{
         return topUp;
     }
 
+    @Override
+    public void deleteTopUp(UUID id) {
+        TopUp topUp = findTopUpById(id);
+
+        if (!topUp.getStatus().equals(TopUpStatus.PENDING.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete non-pending TopUp");
+        }
+
+        topUpRepository.deleteById(id);
+    }
+
 }
