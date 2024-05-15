@@ -7,11 +7,7 @@ import java.util.UUID;
 
 public interface TopUpService {
     public TopUp createTopUp(TopUp topUp);
-    public List<TopUp> findAllTopUps();
     public TopUp findTopUpById(UUID id);
     public List<TopUp> findTopUpByUserId(String userOwnerId);
-    public List<TopUp> findTopUpByStatus(String status);
-    public List<TopUp> findTopUpByStatusNot(String status);
-    public TopUp updateTopUpStatus(UUID id, String newStatus);
     public void deleteTopUp(UUID id);
 }
