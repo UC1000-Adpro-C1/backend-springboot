@@ -3,7 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
 	jacoco
-  id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 sonar {
@@ -21,6 +21,9 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
+    toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
@@ -46,6 +49,8 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 
