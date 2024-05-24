@@ -262,7 +262,7 @@ public class StaffRestControllerTest {
         Payment updatedPayment = new Payment();
         when(staffRestService.updatePaymentStatus(id, PaymentStatus.FAILED.name())).thenReturn(updatedPayment);
 
-        ResponseEntity<Payment> response = staffRestController.updateStatusToFailed(id);
+        ResponseEntity<Payment> response = staffRestController.updatePaymentStatusToFailed(id);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedPayment, response.getBody());

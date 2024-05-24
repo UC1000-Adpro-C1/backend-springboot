@@ -104,7 +104,7 @@ public class StaffRestController {
     }
 
     @PutMapping("/payment/{id}/update-status/failed")
-    public ResponseEntity<Payment> updateStatusToFailed(@PathVariable("id") UUID id) {
+    public ResponseEntity<Payment> updatePaymentStatusToFailed(@PathVariable("id") UUID id) {
         Payment updatedPayment = staffRestService.updatePaymentStatus(id, PaymentStatus.FAILED.name());
         return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
     }
