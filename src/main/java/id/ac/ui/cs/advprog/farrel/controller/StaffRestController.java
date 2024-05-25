@@ -92,8 +92,8 @@ public class StaffRestController {
     }
 
     @GetMapping("/payments/non-pending")
-    public ResponseEntity<List<Payment>> getNonPendingPayments() {
-        List<Payment> nonPendingPayments = staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name());
+    public ResponseEntity<List<Payment>> getNonPendingPayments(@RequestParam(defaultValue = "") String sort) {
+        List<Payment> nonPendingPayments = staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name(), sort);
         return new ResponseEntity<>(nonPendingPayments, HttpStatus.OK);
     }
 
