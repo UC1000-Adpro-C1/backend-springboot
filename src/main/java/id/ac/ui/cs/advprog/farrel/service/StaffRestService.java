@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.StaffPaymentRepository;
 import id.ac.ui.cs.advprog.farrel.repository.StaffTopUpRepository;
+import id.ac.ui.cs.advprog.farrel.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class StaffRestService implements StaffRestServiceInterface{
     @Autowired
     private StaffPaymentRepository paymentRepository;
 
+    private SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
+    private SortTopUpByUserId sortByUserId = new SortTopUpByUserId();
+
     @Override
     public List<TopUp> findAllTopUps() {
         return topUpRepository.findAll();
@@ -35,8 +39,19 @@ public class StaffRestService implements StaffRestServiceInterface{
     }
 
     @Override
-    public List<TopUp> findTopUpByStatus(String status) {
-        return topUpRepository.findByStatus(status);
+    public List<TopUp> findTopUpByStatus(String status, String sortingStrategy) {
+        List<TopUp> topUps = topUpRepository.findByStatus(status);
+
+        if(sortingStrategy.equals("transactionTimeDesc")) {
+            sortByTransactionTime.sort(topUps);
+        } else if (sortingStrategy.equals("ownerId")) {
+            sortByUserId.sort(topUps);
+        } else if (sortingStrategy.equals("transactionTimeAsc")) {
+            sortByTransactionTime.sort(topUps);
+            topUps = topUps.reversed();
+        }
+
+        return topUps;
     }
 
     @Override

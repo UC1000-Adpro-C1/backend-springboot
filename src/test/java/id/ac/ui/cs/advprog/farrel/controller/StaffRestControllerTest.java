@@ -93,7 +93,7 @@ public class StaffRestControllerTest {
     }
 
     @Test
-    public void testGetPendingTopUps() {
+    public void testGetPendingTopUpsNoSorting() {
         List<TopUp> pendingTopUps = new ArrayList<TopUp>();
 
         TopUp topUp1 = new TopUp();
@@ -109,13 +109,13 @@ public class StaffRestControllerTest {
         pendingTopUps.add(topUp1);
         pendingTopUps.add(topUp2);
 
-        when(staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name())).thenReturn(pendingTopUps);
+        when(staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name(), "")).thenReturn(pendingTopUps);
 
-        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getPendingTopUps();
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getPendingTopUps("");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(pendingTopUps, responseEntity.getBody());
-        verify(staffRestService, times(1)).findTopUpByStatus(TopUpStatus.PENDING.name());
+        verify(staffRestService, times(1)).findTopUpByStatus(TopUpStatus.PENDING.name(), "");
     }
 
     @Test

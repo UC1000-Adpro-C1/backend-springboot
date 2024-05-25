@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface StaffRestServiceInterface {
     public List<TopUp> findAllTopUps();
     public TopUp findTopUpById(UUID id);
-    public List<TopUp> findTopUpByStatus(String status);
+    public List<TopUp> findTopUpByStatus(String status, String sortingStrategy);
     public List<TopUp> findTopUpByStatusNot(String status);
     public TopUp updateTopUpStatus(UUID id, String newStatus);
     public Payment createPayment(Payment payment);

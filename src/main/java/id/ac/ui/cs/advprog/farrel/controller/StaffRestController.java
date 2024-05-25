@@ -40,8 +40,8 @@ public class StaffRestController {
     }
 
     @GetMapping("/topups/pending")
-    public ResponseEntity<List<TopUp>> getPendingTopUps() {
-        List<TopUp> pendingTopUps = staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name());
+    public ResponseEntity<List<TopUp>> getPendingTopUps(@RequestParam(defaultValue = "") String sort) {
+        List<TopUp> pendingTopUps = staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name(), sort);
         return new ResponseEntity<>(pendingTopUps, HttpStatus.OK);
     }
 

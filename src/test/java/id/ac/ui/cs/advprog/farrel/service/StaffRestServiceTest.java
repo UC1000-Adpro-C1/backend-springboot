@@ -6,6 +6,9 @@ import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.StaffPaymentRepository;
 import id.ac.ui.cs.advprog.farrel.repository.StaffTopUpRepository;
+import id.ac.ui.cs.advprog.farrel.strategy.SortTopUpByTransactionTime;
+import id.ac.ui.cs.advprog.farrel.strategy.SortTopUpByUserId;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +37,9 @@ public class StaffRestServiceTest {
 
     @InjectMocks
     private StaffRestService staffRestService;
+
+    private SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
+    private SortTopUpByUserId sortByUserId = new SortTopUpByUserId();
 
     @Test
     public void testFindAllTopUps() {
@@ -60,12 +67,73 @@ public class StaffRestServiceTest {
     }
 
     @Test
-    public void testFindTopUpByStatus() {
+    public void testFindTopUpByStatusNoSorting() {
         List<TopUp> topUps = new ArrayList<>();
         String status = TopUpStatus.PENDING.name();
         when(topUpRepository.findByStatus(status)).thenReturn(topUps);
 
-        assertEquals(topUps, staffRestService.findTopUpByStatus(status));
+        assertEquals(topUps, staffRestService.findTopUpByStatus(status, ""));
+    }
+
+    @Test
+    public void testFindTopUpByStatusWithTransactionTimeDesc() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setTransactionTime(LocalDate.of(2023, 1, 1));
+        TopUp topUp2 = new TopUp();
+        topUp2.setTransactionTime(LocalDate.of(2023, 1, 2));
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatus(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatus(status, "transactionTimeDesc");
+
+        assertEquals(topUp1, result.get(0));
+        assertEquals(topUp2, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusWithOwnerId() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setUserOwnerId(UUID.randomUUID().toString());
+        TopUp topUp2 = new TopUp();
+        topUp2.setUserOwnerId(UUID.randomUUID().toString());
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatus(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatus(status, "ownerId");
+
+        sortByUserId.sort(topUps);
+        assertEquals(topUps, result);
+    }
+
+    @Test
+    public void testFindTopUpByStatusWithTransactionTimeAsc() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setTransactionTime(LocalDate.of(2023, 1, 2));
+        TopUp topUp2 = new TopUp();
+        topUp2.setTransactionTime(LocalDate.of(2023, 1, 1));
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatus(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatus(status, "transactionTimeAsc");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortByTransactionTime.sort(expected);
+        expected = expected.reversed();
+        assertEquals(expected, result);
+        assertEquals(topUp1, result.get(0));
+        assertEquals(topUp2, result.get(1));
     }
 
     @Test
