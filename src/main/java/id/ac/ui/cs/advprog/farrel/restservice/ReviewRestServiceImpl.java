@@ -64,4 +64,10 @@ public class ReviewRestServiceImpl implements ReviewRestService{
             throw new NoSuchElementException("No review found with ID: " + id);
         }
     }
+
+    public List<Review> getAllReviewsSortedByRating(String id) {
+        List<Review> reviews = reviewDb.findByProductId(id);
+        sortByRating = new SortByRatingStrategy();
+        return sortByRating.sort(reviews);
+    }
 }
