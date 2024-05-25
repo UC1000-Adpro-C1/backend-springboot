@@ -74,6 +74,9 @@ public class StaffRestService implements StaffRestServiceInterface{
         } else if (sortingStrategy.equals("statusReverse")) {
             sortNonPendingTopUpByStatus.sort(topUps);
             Collections.reverse(topUps);
+        } else if (sortingStrategy.equals("amountReverse")) {
+            sortTopUpByAmount.sort(topUps);
+            Collections.reverse(topUps);
         }
     }
 
@@ -139,6 +142,9 @@ public class StaffRestService implements StaffRestServiceInterface{
             sortNonPendingPaymentByStatus.sort(payments);
         } else if (sortingStrategy.equals("statusReverse")) {
             sortNonPendingPaymentByStatus.sort(payments);
+            Collections.reverse(payments);
+        } else if (sortingStrategy.equals("amountReverse")) {
+            sortPaymentByAmount.sort(payments);
             Collections.reverse(payments);
         }
     }
