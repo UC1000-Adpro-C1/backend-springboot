@@ -236,9 +236,9 @@ public class StaffRestControllerTest {
     @Test
     public void testGetNonPendingPayments() {
         List<Payment> nonPendingPayments = Arrays.asList(new Payment(), new Payment());
-        when(staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name())).thenReturn(nonPendingPayments);
+        when(staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name(), "")).thenReturn(nonPendingPayments);
 
-        ResponseEntity<List<Payment>> response = staffRestController.getNonPendingPayments();
+        ResponseEntity<List<Payment>> response = staffRestController.getNonPendingPayments("");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(nonPendingPayments, response.getBody());
