@@ -6,12 +6,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -112,5 +114,39 @@ public class ReviewRestControllerTest {
 
         mockMvc.perform(get("/api/reviewProduct/{id}", "product123"))
             .andExpect(status().isNotFound());
+    }
+    @Test
+    public void testGetReviewsSortedByRatingSuccess() throws Exception {
+        String productId = "product123";
+        UUID reviewId = UUID.randomUUID();
+        UUID reviewId2 = UUID.randomUUID();
+        Review review1 = new Review(reviewId, "user123", "product123", 1, "EW!");
+        Review review2 = new Review(reviewId2, "user123", "product123", 5, "Excellent!");
+        List<Review> reviews = Arrays.asList(review1, review2);
+
+        Mockito.when(reviewRestService.getAllReviewsSortedByRating(productId)).thenReturn(reviews);
+
+        mockMvc.perform(get("/api/reviewProduct/sortedByRating/{id}", productId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].reviewId").value(reviewId.toString()))
+                .andExpect(jsonPath("$[0].userId").value("user123"))
+                .andExpect(jsonPath("$[0].productId").value("product123"))
+                .andExpect(jsonPath("$[0].review").value("EW!"))
+                .andExpect(jsonPath("$[0].rating").value(1))
+                .andExpect(jsonPath("$[1].reviewId").value(reviewId2.toString()))
+                .andExpect(jsonPath("$[1].userId").value("user123"))
+                .andExpect(jsonPath("$[1].productId").value("product123"))
+                .andExpect(jsonPath("$[1].review").value("Excellent!"))
+                .andExpect(jsonPath("$[1].rating").value(5));
+    }
+
+    @Test
+    public void testGetReviewsSortedByRatingNotFound() throws Exception {
+        String productId = "123";
+
+        Mockito.when(reviewRestService.getAllReviewsSortedByRating(productId)).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/reviewProduct/sortedByRating/{id}", productId))
+                .andExpect(status().isNotFound());
     }
 }

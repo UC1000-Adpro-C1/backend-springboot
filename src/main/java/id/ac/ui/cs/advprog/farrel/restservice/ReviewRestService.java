@@ -18,5 +18,5 @@ public interface ReviewRestService {
     Review updateRestReview(Review bukuFromDTO);
     List<Review> getRestReviewByProductId(String id);
     void restDeleteReview(UUID id);
-
+    List<Review> getAllReviewsSortedByRating(String id);
 }
