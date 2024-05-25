@@ -87,6 +87,15 @@ public class ReviewRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
         }
     }
-  
+    @CrossOrigin("*")
+    @GetMapping("/reviewProduct/sortedByRating/{id}")
+    public List<Review> getReviewsSortedByRating(@PathVariable("id") String id) {
+        try {
+            List<Review> reviews = reviewRestService.getAllReviewsSortedByRating(id);
+            return reviews;
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
+        }
+    }
 
 }

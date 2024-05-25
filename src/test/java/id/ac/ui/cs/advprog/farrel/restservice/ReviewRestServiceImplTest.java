@@ -3,15 +3,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
+import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategy;
 import id.ac.ui.cs.advprog.farrel.repository.ReviewDb;
 
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public class ReviewRestServiceImplTest {
 
     private Review review;
     private UUID reviewId = UUID.randomUUID();
+    private SortByRatingStrategy sortByRatingStrategy = new SortByRatingStrategy();
 
     @BeforeEach
     void setUp() {
