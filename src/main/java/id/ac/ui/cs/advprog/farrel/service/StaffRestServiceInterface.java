@@ -17,6 +17,7 @@ public interface StaffRestServiceInterface {
     public List<Payment> findAllPayments();
     public Payment findPaymentById(UUID id);
     public List<Payment> findPaymentByStatus(String status, String sortingStrategy);
-    public List<Payment> findPaymentByStatusNot(String status);
+    public List<Payment> findPaymentByStatusNot(String status, String sortingStrategy);
+    public void sortPayments(List<Payment> payments, String sortingStrategy);
     public Payment updatePaymentStatus(UUID id, String newStatus);
 }

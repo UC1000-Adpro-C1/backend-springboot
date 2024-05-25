@@ -423,12 +423,12 @@ public class StaffRestServiceTest {
     }
 
     @Test
-    public void testFindPaymentByStatusNot() {
+    public void testFindPaymentByStatusNotNoSorting() {
         List<Payment> payments = new ArrayList<>();
         String status = PaymentStatus.PENDING.name();
         when(paymentRepository.findByStatusNot(status)).thenReturn(payments);
 
-        assertEquals(payments, staffRestService.findPaymentByStatusNot(status));
+        assertEquals(payments, staffRestService.findPaymentByStatusNot(status, ""));
     }
 
     @Test
