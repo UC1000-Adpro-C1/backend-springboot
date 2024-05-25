@@ -40,14 +40,14 @@ public class StaffRestController {
     }
 
     @GetMapping("/topups/pending")
-    public ResponseEntity<List<TopUp>> getPendingTopUps() {
-        List<TopUp> pendingTopUps = staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name());
+    public ResponseEntity<List<TopUp>> getPendingTopUps(@RequestParam(defaultValue = "") String sort) {
+        List<TopUp> pendingTopUps = staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name(), sort);
         return new ResponseEntity<>(pendingTopUps, HttpStatus.OK);
     }
 
     @GetMapping("/topups/non-pending")
-    public ResponseEntity<List<TopUp>> getNonPendingTopUps() {
-        List<TopUp> nonPendingTopUps = staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name());
+    public ResponseEntity<List<TopUp>> getNonPendingTopUps(@RequestParam(defaultValue = "") String sort) {
+        List<TopUp> nonPendingTopUps = staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name(), sort);
         return new ResponseEntity<>(nonPendingTopUps, HttpStatus.OK);
     }
 
@@ -86,14 +86,14 @@ public class StaffRestController {
     }
 
     @GetMapping("/payments/pending")
-    public ResponseEntity<List<Payment>> getPendingPayment() {
-        List<Payment> pendingPayments = staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name());
+    public ResponseEntity<List<Payment>> getPendingPayment(@RequestParam(defaultValue = "") String sort) {
+        List<Payment> pendingPayments = staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name(), sort);
         return new ResponseEntity<>(pendingPayments, HttpStatus.OK);
     }
 
     @GetMapping("/payments/non-pending")
-    public ResponseEntity<List<Payment>> getNonPendingPayments() {
-        List<Payment> nonPendingPayments = staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name());
+    public ResponseEntity<List<Payment>> getNonPendingPayments(@RequestParam(defaultValue = "") String sort) {
+        List<Payment> nonPendingPayments = staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name(), sort);
         return new ResponseEntity<>(nonPendingPayments, HttpStatus.OK);
     }
 
@@ -104,7 +104,7 @@ public class StaffRestController {
     }
 
     @PutMapping("/payment/{id}/update-status/failed")
-    public ResponseEntity<Payment> updateStatusToFailed(@PathVariable("id") UUID id) {
+    public ResponseEntity<Payment> updatePaymentStatusToFailed(@PathVariable("id") UUID id) {
         Payment updatedPayment = staffRestService.updatePaymentStatus(id, PaymentStatus.FAILED.name());
         return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
     }

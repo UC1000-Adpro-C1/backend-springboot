@@ -6,11 +6,13 @@ import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.StaffPaymentRepository;
 import id.ac.ui.cs.advprog.farrel.repository.StaffTopUpRepository;
+import id.ac.ui.cs.advprog.farrel.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +24,14 @@ public class StaffRestService implements StaffRestServiceInterface{
 
     @Autowired
     private StaffPaymentRepository paymentRepository;
+
+    private SortTopUpByTransactionTime sortTopUpByTransactionTime = new SortTopUpByTransactionTime();
+    private SortTopUpByUserId sortTopUpByUserId = new SortTopUpByUserId();
+    private SortTopUpByAmount sortTopUpByAmount = new SortTopUpByAmount();
+    private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
+    private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
+    private SortNonPendingTopUpByStatus sortNonPendingTopUpByStatus = new SortNonPendingTopUpByStatus();
+    private SortNonPendingPaymentByStatus sortNonPendingPaymentByStatus = new SortNonPendingPaymentByStatus();
 
     @Override
     public List<TopUp> findAllTopUps() {
@@ -35,13 +45,36 @@ public class StaffRestService implements StaffRestServiceInterface{
     }
 
     @Override
-    public List<TopUp> findTopUpByStatus(String status) {
-        return topUpRepository.findByStatus(status);
+    public List<TopUp> findTopUpByStatus(String status, String sortingStrategy) {
+        List<TopUp> topUps = topUpRepository.findByStatus(status);
+        sortTopUps(topUps, sortingStrategy);
+        return topUps;
     }
 
     @Override
-    public List<TopUp> findTopUpByStatusNot(String status) {
-        return topUpRepository.findByStatusNot(status);
+    public List<TopUp> findTopUpByStatusNot(String status, String sortingStrategy) {
+        List<TopUp> topUps = topUpRepository.findByStatusNot(status);
+        sortTopUps(topUps, sortingStrategy);
+        return topUps;
+    }
+
+    @Override
+    public void sortTopUps(List<TopUp> topUps, String sortingStrategy) {
+        if(sortingStrategy.equals("transactionTimeDesc")) {
+            sortTopUpByTransactionTime.sort(topUps);
+        } else if (sortingStrategy.equals("ownerId")) {
+            sortTopUpByUserId.sort(topUps);
+        } else if (sortingStrategy.equals("transactionTimeAsc")) {
+            sortTopUpByTransactionTime.sort(topUps);
+            Collections.reverse(topUps);
+        } else if (sortingStrategy.equals("amount")) {
+            sortTopUpByAmount.sort(topUps);
+        } else if (sortingStrategy.equals("status")) {
+            sortNonPendingTopUpByStatus.sort(topUps);
+        } else if (sortingStrategy.equals("statusReverse")) {
+            sortNonPendingTopUpByStatus.sort(topUps);
+            Collections.reverse(topUps);
+        }
     }
 
     @Override
@@ -83,13 +116,31 @@ public class StaffRestService implements StaffRestServiceInterface{
     }
 
     @Override
-    public List<Payment> findPaymentByStatus(String status) {
-        return paymentRepository.findByStatus(status);
+    public List<Payment> findPaymentByStatus(String status, String sortingStrategy) {
+        List<Payment> payments = paymentRepository.findByStatus(status);
+        sortPayments(payments, sortingStrategy);
+        return payments;
     }
 
     @Override
-    public List<Payment> findPaymentByStatusNot(String status) {
-        return paymentRepository.findByStatusNot(status);
+    public List<Payment> findPaymentByStatusNot(String status, String sortingStrategy) {
+        List<Payment> payments = paymentRepository.findByStatusNot(status);
+        sortPayments(payments, sortingStrategy);
+        return payments;
+    }
+
+    @Override
+    public void sortPayments(List<Payment> payments, String sortingStrategy) {
+        if (sortingStrategy.equals("ownerId")) {
+            sortPaymentByUserId.sort(payments);
+        } else if (sortingStrategy.equals("amount")) {
+            sortPaymentByAmount.sort(payments);
+        } else if (sortingStrategy.equals("status")) {
+            sortNonPendingPaymentByStatus.sort(payments);
+        } else if (sortingStrategy.equals("statusReverse")) {
+            sortNonPendingPaymentByStatus.sort(payments);
+            Collections.reverse(payments);
+        }
     }
 
     @Override
