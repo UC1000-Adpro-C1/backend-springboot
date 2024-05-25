@@ -44,6 +44,7 @@ public class StaffRestServiceTest {
     private SortNonPendingTopUpByStatus sortNonPendingTopUpByStatus = new SortNonPendingTopUpByStatus();
     private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
     private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
+    private SortNonPendingPaymentByStatus sortNonPendingPaymentByStatus = new SortNonPendingPaymentByStatus();
 
     @Test
     public void testFindAllTopUps() {
@@ -429,6 +430,53 @@ public class StaffRestServiceTest {
         when(paymentRepository.findByStatusNot(status)).thenReturn(payments);
 
         assertEquals(payments, staffRestService.findPaymentByStatusNot(status, ""));
+    }
+
+    @Test
+    public void testFindPaymentByStatusNotSortByStatus() {
+        List<Payment> payments = new ArrayList<>();
+        Payment payment1 = new Payment.PaymentBuilder(UUID.randomUUID(), 2000L, "user1")
+                .handledBy("staff1")
+                .status(PaymentStatus.FAILED.name())
+                .build();
+        Payment payment2 = new Payment.PaymentBuilder(UUID.randomUUID(), 1000L, "user2")
+                .handledBy("staff2")
+                .status(PaymentStatus.SUCCESS.name())
+                .build();
+        payments.add(payment1);
+        payments.add(payment2);
+
+        String status = PaymentStatus.PENDING.name();
+        when(paymentRepository.findByStatusNot(status)).thenReturn(payments);
+
+        List<Payment> result = staffRestService.findPaymentByStatusNot(status, "status");
+
+        sortNonPendingPaymentByStatus.sort(payments);
+        assertEquals(payments, result);
+    }
+
+    @Test
+    public void testFindPaymentByStatusNotSortByStatusReverse() {
+        List<Payment> payments = new ArrayList<>();
+        Payment payment1 = new Payment.PaymentBuilder(UUID.randomUUID(), 2000L, "user1")
+                .handledBy("staff1")
+                .status(PaymentStatus.FAILED.name())
+                .build();
+        Payment payment2 = new Payment.PaymentBuilder(UUID.randomUUID(), 1000L, "user2")
+                .handledBy("staff2")
+                .status(PaymentStatus.SUCCESS.name())
+                .build();
+        payments.add(payment1);
+        payments.add(payment2);
+
+        String status = PaymentStatus.PENDING.name();
+        when(paymentRepository.findByStatusNot(status)).thenReturn(payments);
+
+        List<Payment> result = staffRestService.findPaymentByStatusNot(status, "statusReverse");
+
+        sortNonPendingPaymentByStatus.sort(payments);
+        Collections.reverse(payments);
+        assertEquals(payments, result);
     }
 
     @Test
