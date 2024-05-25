@@ -8,7 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.repository.ReviewDb;
-import jakarta.transaction.Transactional;
+import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategy;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,7 +18,8 @@ import java.util.NoSuchElementException;
 public class ReviewRestServiceImpl implements ReviewRestService{
     @Autowired
     private ReviewDb reviewDb;
-    
+    private SortByRatingStrategy sortByRating;
+
     @Override
     public Review createRestReview(Review review){
         reviewDb.save(review);
@@ -63,7 +64,4 @@ public class ReviewRestServiceImpl implements ReviewRestService{
             throw new NoSuchElementException("No review found with ID: " + id);
         }
     }
-
-
-
 }
