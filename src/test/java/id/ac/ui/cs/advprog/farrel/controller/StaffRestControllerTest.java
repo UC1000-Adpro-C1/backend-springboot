@@ -225,9 +225,9 @@ public class StaffRestControllerTest {
     @Test
     public void testGetPendingPayment() {
         List<Payment> pendingPayments = Arrays.asList(new Payment(), new Payment());
-        when(staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name())).thenReturn(pendingPayments);
+        when(staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name(), "")).thenReturn(pendingPayments);
 
-        ResponseEntity<List<Payment>> response = staffRestController.getPendingPayment();
+        ResponseEntity<List<Payment>> response = staffRestController.getPendingPayment("");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(pendingPayments, response.getBody());

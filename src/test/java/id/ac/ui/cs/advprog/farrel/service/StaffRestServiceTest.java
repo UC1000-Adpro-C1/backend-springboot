@@ -6,8 +6,7 @@ import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.model.TopUp;
 import id.ac.ui.cs.advprog.farrel.repository.StaffPaymentRepository;
 import id.ac.ui.cs.advprog.farrel.repository.StaffTopUpRepository;
-import id.ac.ui.cs.advprog.farrel.strategy.SortTopUpByTransactionTime;
-import id.ac.ui.cs.advprog.farrel.strategy.SortTopUpByUserId;
+import id.ac.ui.cs.advprog.farrel.strategy.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +39,8 @@ public class StaffRestServiceTest {
 
     private SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
     private SortTopUpByUserId sortByUserId = new SortTopUpByUserId();
+    private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
+    private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
 
     @Test
     public void testFindAllTopUps() {
@@ -202,12 +203,58 @@ public class StaffRestServiceTest {
     }
 
     @Test
-    public void testFindPaymentByStatus() {
+    public void testFindPaymentByStatusNoSorting() {
         List<Payment> payments = new ArrayList<>();
         String status = PaymentStatus.PENDING.name();
         when(paymentRepository.findByStatus(status)).thenReturn(payments);
 
-        assertEquals(payments, staffRestService.findPaymentByStatus(status));
+        assertEquals(payments, staffRestService.findPaymentByStatus(status, ""));
+    }
+
+    @Test
+    public void testFindPaymentByStatusWithUserIdSorting() {
+        List<Payment> payments = new ArrayList<>();
+        Payment payment1 = new Payment.PaymentBuilder(UUID.randomUUID(), 1000L, "user2")
+                .handledBy("staff1")
+                .status(PaymentStatus.PENDING.name())
+                .build();
+        Payment payment2 = new Payment.PaymentBuilder(UUID.randomUUID(), 2000L, "user1")
+                .handledBy("staff2")
+                .status(PaymentStatus.PENDING.name())
+                .build();
+        payments.add(payment1);
+        payments.add(payment2);
+
+        String status = PaymentStatus.PENDING.name();
+        when(paymentRepository.findByStatus(status)).thenReturn(payments);
+
+        List<Payment> result = staffRestService.findPaymentByStatus(status, "ownerId");
+
+        sortPaymentByUserId.sort(payments);
+        assertEquals(payments, result);
+    }
+
+    @Test
+    public void testFindPaymentByStatusWithAmountSorting() {
+        List<Payment> payments = new ArrayList<>();
+        Payment payment1 = new Payment.PaymentBuilder(UUID.randomUUID(), 2000L, "user1")
+                .handledBy("staff1")
+                .status(PaymentStatus.PENDING.name())
+                .build();
+        Payment payment2 = new Payment.PaymentBuilder(UUID.randomUUID(), 1000L, "user2")
+                .handledBy("staff2")
+                .status(PaymentStatus.PENDING.name())
+                .build();
+        payments.add(payment1);
+        payments.add(payment2);
+
+        String status = PaymentStatus.PENDING.name();
+        when(paymentRepository.findByStatus(status)).thenReturn(payments);
+
+        List<Payment> result = staffRestService.findPaymentByStatus(status, "amount");
+
+        sortPaymentByAmount.sort(payments);
+        assertEquals(payments, result);
     }
 
     @Test

@@ -86,8 +86,8 @@ public class StaffRestController {
     }
 
     @GetMapping("/payments/pending")
-    public ResponseEntity<List<Payment>> getPendingPayment() {
-        List<Payment> pendingPayments = staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name());
+    public ResponseEntity<List<Payment>> getPendingPayment(@RequestParam(defaultValue = "") String sort) {
+        List<Payment> pendingPayments = staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name(), sort);
         return new ResponseEntity<>(pendingPayments, HttpStatus.OK);
     }
 

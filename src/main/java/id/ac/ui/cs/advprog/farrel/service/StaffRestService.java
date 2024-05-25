@@ -27,6 +27,8 @@ public class StaffRestService implements StaffRestServiceInterface{
     private SortTopUpByTransactionTime sortTopUpByTransactionTime = new SortTopUpByTransactionTime();
     private SortTopUpByUserId sortTopUpByUserId = new SortTopUpByUserId();
     private SortTopUpByAmount sortTopUpByAmount = new SortTopUpByAmount();
+    private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
+    private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
 
     @Override
     public List<TopUp> findAllTopUps() {
@@ -101,8 +103,16 @@ public class StaffRestService implements StaffRestServiceInterface{
     }
 
     @Override
-    public List<Payment> findPaymentByStatus(String status) {
-        return paymentRepository.findByStatus(status);
+    public List<Payment> findPaymentByStatus(String status, String sortingStrategy) {
+        List<Payment> payments = paymentRepository.findByStatus(status);
+
+        if (sortingStrategy.equals("ownerId")) {
+            sortPaymentByUserId.sort(payments);
+        } else if (sortingStrategy.equals("amount")) {
+            sortPaymentByAmount.sort(payments);
+        }
+
+        return payments;
     }
 
     @Override
