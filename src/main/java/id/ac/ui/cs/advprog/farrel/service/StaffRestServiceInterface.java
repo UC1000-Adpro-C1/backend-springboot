@@ -10,7 +10,8 @@ public interface StaffRestServiceInterface {
     public List<TopUp> findAllTopUps();
     public TopUp findTopUpById(UUID id);
     public List<TopUp> findTopUpByStatus(String status, String sortingStrategy);
-    public List<TopUp> findTopUpByStatusNot(String status);
+    public List<TopUp> findTopUpByStatusNot(String status, String sortingStrategy);
+    public void sortTopUps(List<TopUp> topUps, String sortingStrategy);
     public TopUp updateTopUpStatus(UUID id, String newStatus);
     public Payment createPayment(Payment payment);
     public List<Payment> findAllPayments();

@@ -143,7 +143,7 @@ public class StaffRestServiceTest {
         String status = TopUpStatus.PENDING.name();
         when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
 
-        assertEquals(topUps, staffRestService.findTopUpByStatusNot(status));
+        assertEquals(topUps, staffRestService.findTopUpByStatusNot(status, ""));
     }
 
     @Test

@@ -46,8 +46,8 @@ public class StaffRestController {
     }
 
     @GetMapping("/topups/non-pending")
-    public ResponseEntity<List<TopUp>> getNonPendingTopUps() {
-        List<TopUp> nonPendingTopUps = staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name());
+    public ResponseEntity<List<TopUp>> getNonPendingTopUps(@RequestParam(defaultValue = "") String sort) {
+        List<TopUp> nonPendingTopUps = staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name(), sort);
         return new ResponseEntity<>(nonPendingTopUps, HttpStatus.OK);
     }
 

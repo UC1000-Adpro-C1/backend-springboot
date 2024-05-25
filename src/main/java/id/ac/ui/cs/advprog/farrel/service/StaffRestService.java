@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,24 +45,29 @@ public class StaffRestService implements StaffRestServiceInterface{
     @Override
     public List<TopUp> findTopUpByStatus(String status, String sortingStrategy) {
         List<TopUp> topUps = topUpRepository.findByStatus(status);
+        sortTopUps(topUps, sortingStrategy);
+        return topUps;
+    }
 
+    @Override
+    public List<TopUp> findTopUpByStatusNot(String status, String sortingStrategy) {
+        List<TopUp> topUps = topUpRepository.findByStatusNot(status);
+        sortTopUps(topUps, sortingStrategy);
+        return topUps;
+    }
+
+    @Override
+    public void sortTopUps(List<TopUp> topUps, String sortingStrategy) {
         if(sortingStrategy.equals("transactionTimeDesc")) {
             sortTopUpByTransactionTime.sort(topUps);
         } else if (sortingStrategy.equals("ownerId")) {
             sortTopUpByUserId.sort(topUps);
         } else if (sortingStrategy.equals("transactionTimeAsc")) {
             sortTopUpByTransactionTime.sort(topUps);
-            topUps = topUps.reversed();
+            Collections.reverse(topUps);
         } else if (sortingStrategy.equals("amount")) {
             sortTopUpByAmount.sort(topUps);
         }
-
-        return topUps;
-    }
-
-    @Override
-    public List<TopUp> findTopUpByStatusNot(String status) {
-        return topUpRepository.findByStatusNot(status);
     }
 
     @Override

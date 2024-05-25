@@ -135,13 +135,13 @@ public class StaffRestControllerTest {
         nonPendingTopUps.add(topUp1);
         nonPendingTopUps.add(topUp2);
 
-        when(staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name())).thenReturn(nonPendingTopUps);
+        when(staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name(), "")).thenReturn(nonPendingTopUps);
 
-        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getNonPendingTopUps();
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getNonPendingTopUps("");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(nonPendingTopUps, responseEntity.getBody());
-        verify(staffRestService, times(1)).findTopUpByStatusNot(TopUpStatus.PENDING.name());
+        verify(staffRestService, times(1)).findTopUpByStatusNot(TopUpStatus.PENDING.name(), "");
     }
 
     @Test
