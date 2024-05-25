@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ public class StaffRestServiceTest {
 
     private SortTopUpByTransactionTime sortByTransactionTime = new SortTopUpByTransactionTime();
     private SortTopUpByUserId sortByUserId = new SortTopUpByUserId();
+    private SortTopUpByAmount sortTopUpByAmount = new SortTopUpByAmount();
+    private SortNonPendingTopUpByStatus sortNonPendingTopUpByStatus = new SortNonPendingTopUpByStatus();
     private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
     private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
 
@@ -138,12 +141,174 @@ public class StaffRestServiceTest {
     }
 
     @Test
-    public void testFindTopUpByStatusNot() {
+    public void testFindTopUpByStatusSortByAmount() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setAmount(2000);
+        TopUp topUp2 = new TopUp();
+        topUp2.setAmount(1000);
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatus(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatus(status, "amount");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortTopUpByAmount.sort(expected);
+        assertEquals(expected, result);
+        assertEquals(topUp2, result.get(0));
+        assertEquals(topUp1, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotNoSorting() {
         List<TopUp> topUps = new ArrayList<>();
         String status = TopUpStatus.PENDING.name();
         when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
 
         assertEquals(topUps, staffRestService.findTopUpByStatusNot(status, ""));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotSortByTransactionTimeAsc() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setTransactionTime(LocalDate.of(2023, 1, 2));
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        TopUp topUp2 = new TopUp();
+        topUp2.setTransactionTime(LocalDate.of(2023, 1, 1));
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "transactionTimeAsc");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortByTransactionTime.sort(expected);
+        expected = expected.reversed();
+        assertEquals(expected, result);
+        assertEquals(topUp1, result.get(0));
+        assertEquals(topUp2, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotSortByTransactionTimeDesc() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        topUp1.setTransactionTime(LocalDate.of(2023, 1, 1));
+        TopUp topUp2 = new TopUp();
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUp2.setTransactionTime(LocalDate.of(2023, 1, 2));
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "transactionTimeDesc");
+
+        assertEquals(topUp1, result.get(0));
+        assertEquals(topUp2, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotWithOwnerId() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        topUp1.setUserOwnerId(UUID.randomUUID().toString());
+        TopUp topUp2 = new TopUp();
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUp2.setUserOwnerId(UUID.randomUUID().toString());
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "ownerId");
+
+        sortByUserId.sort(topUps);
+        assertEquals(topUps, result);
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotSortByAmount() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        topUp1.setAmount(2000);
+        TopUp topUp2 = new TopUp();
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUp2.setAmount(1000);
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "amount");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortTopUpByAmount.sort(expected);
+        assertEquals(expected, result);
+        assertEquals(topUp2, result.get(0));
+        assertEquals(topUp1, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotSortStatus() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        topUp1.setAmount(2000);
+        TopUp topUp2 = new TopUp();
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUp2.setAmount(1000);
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "status");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortNonPendingTopUpByStatus.sort(expected);
+        assertEquals(expected, result);
+        assertEquals(topUp1, result.get(0));
+        assertEquals(topUp2, result.get(1));
+    }
+
+    @Test
+    public void testFindTopUpByStatusNotSortStatusReverse() {
+        List<TopUp> topUps = new ArrayList<>();
+        TopUp topUp1 = new TopUp();
+        topUp1.setStatus(TopUpStatus.SUCCESS.name());
+        topUp1.setAmount(2000);
+        TopUp topUp2 = new TopUp();
+        topUp2.setStatus(TopUpStatus.FAILED.name());
+        topUp2.setAmount(1000);
+        topUps.add(topUp1);
+        topUps.add(topUp2);
+
+        String status = TopUpStatus.PENDING.name();
+        when(topUpRepository.findByStatusNot(status)).thenReturn(topUps);
+
+        List<TopUp> result = staffRestService.findTopUpByStatusNot(status, "statusReverse");
+
+        List<TopUp> expected = new ArrayList<>(topUps);
+        sortNonPendingTopUpByStatus.sort(expected);
+        Collections.reverse(expected);
+        assertEquals(expected, result);
+        assertEquals(topUp2, result.get(0));
+        assertEquals(topUp1, result.get(1));
     }
 
     @Test

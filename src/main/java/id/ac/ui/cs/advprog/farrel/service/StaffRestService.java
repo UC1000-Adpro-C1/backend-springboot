@@ -30,6 +30,7 @@ public class StaffRestService implements StaffRestServiceInterface{
     private SortTopUpByAmount sortTopUpByAmount = new SortTopUpByAmount();
     private SortPaymentByUserId sortPaymentByUserId = new SortPaymentByUserId();
     private SortPaymentByAmount sortPaymentByAmount = new SortPaymentByAmount();
+    private SortNonPendingTopUpByStatus sortNonPendingTopUpByStatus = new SortNonPendingTopUpByStatus();
 
     @Override
     public List<TopUp> findAllTopUps() {
@@ -52,7 +53,15 @@ public class StaffRestService implements StaffRestServiceInterface{
     @Override
     public List<TopUp> findTopUpByStatusNot(String status, String sortingStrategy) {
         List<TopUp> topUps = topUpRepository.findByStatusNot(status);
+
         sortTopUps(topUps, sortingStrategy);
+        if (sortingStrategy.equals("status")) {
+            sortNonPendingTopUpByStatus.sort(topUps);
+        } else if (sortingStrategy.equals("statusReverse")) {
+            sortNonPendingTopUpByStatus.sort(topUps);
+            Collections.reverse(topUps);
+        }
+        
         return topUps;
     }
 
