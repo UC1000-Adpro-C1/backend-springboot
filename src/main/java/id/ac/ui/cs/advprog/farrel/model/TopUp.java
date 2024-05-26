@@ -63,7 +63,7 @@ public class TopUp {
             if (status.equals(TopUpStatus.FAILED.getValue())) {
                 currentState.processFailed(this);
                 this.status = currentState.getState();
-            } else {
+            } else if (status.equals(TopUpStatus.SUCCESS.getValue())) {
                 currentState.processSuccess(this);
                 this.status = currentState.getState();
             }
