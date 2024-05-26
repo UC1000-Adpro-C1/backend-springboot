@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.farrel.restcontroller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,8 +19,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.restservice.ReviewRestService;
@@ -149,4 +153,48 @@ public class ReviewRestControllerTest {
         mockMvc.perform(get("/reviewProduct/sortedByRating/{id}", productId))
                 .andExpect(status().isNotFound());
     }
+    @Test
+    void testRestUpdateReview_ValidReview() throws Exception {
+        // Arrange
+        UUID reviewId = UUID.randomUUID();
+        Review review = new Review(reviewId, "user123", "product123", 5, "Excellent!");
+        when(reviewRestService.updateRestReview(any(Review.class))).thenReturn(review);
+
+        // Act and Assert
+        mockMvc.perform(put("/api/review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(review)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.userId").value("user123"))
+            .andExpect(jsonPath("$.productId").value("product123"))
+            .andExpect(jsonPath("$.rating").value(5))
+            .andExpect(jsonPath("$.review").value("Excellent!"));
+    }
+    @Test
+    void testRestUpdateReview_InValidReview() throws Exception {
+        // Arrange
+        UUID reviewId = UUID.randomUUID();
+        Review review = new Review();
+        when(reviewRestService.updateRestReview(any(Review.class))).thenReturn(review);
+
+        // Act and Assert
+        mockMvc.perform(put("/api/review")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(review)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.userId").doesNotExist()) // Periksa bahwa userId tidak ada dalam respons
+        .andExpect(jsonPath("$.productId").doesNotExist()) // Periksa bahwa productId tidak ada dalam respons
+        .andExpect(jsonPath("$.rating").value(0)) ;
+    }
+
+    @Test
+    void testGetReviewsSortedByRatingDesc_NotFound() throws Exception {
+        String productId = "product123";
+
+        when(reviewRestService.getAllReviewsSortedByRatingDesc(productId)).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/api/reviewProduct/sortedByRatingDesc/{id}", productId))
+                .andExpect(status().isNotFound());
+    }
+    
 }
