@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class TopUpController {
 
     @Autowired
@@ -23,6 +23,7 @@ public class TopUpController {
 
     @PostMapping("/topup")
     public ResponseEntity<TopUp> createTopUp(@RequestBody TopUp topUp) {
+        System.out.println("masuk");
         TopUp createdTopUp = topUpService.createTopUp(topUp);
         return new ResponseEntity<>(createdTopUp, HttpStatus.CREATED);
     }
