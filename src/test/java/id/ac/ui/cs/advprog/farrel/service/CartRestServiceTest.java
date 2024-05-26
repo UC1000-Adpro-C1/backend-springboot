@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.farrel.service;
 
 import id.ac.ui.cs.advprog.farrel.model.Cart;
 import id.ac.ui.cs.advprog.farrel.model.CartItem;
+import id.ac.ui.cs.advprog.farrel.repository.CartItemRepository;
 import id.ac.ui.cs.advprog.farrel.repository.CartRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,9 @@ public class CartRestServiceTest {
 
     @Mock
     private CartRepository cartRepository;
+
+    @Mock
+    private CartItemRepository cartItemRepository;
 
     @InjectMocks
     private CartRestServiceImpl cartRestService;
@@ -87,6 +91,7 @@ public class CartRestServiceTest {
 
         when(cartRepository.findById(cartId)).thenReturn(Optional.of(cart));
         when(cartRepository.save(cart)).thenReturn(cart);
+        doNothing().when(cartItemRepository).deleteById(itemId);
 
         cartRestService.removeItemFromCart(cartId, itemId);
 
