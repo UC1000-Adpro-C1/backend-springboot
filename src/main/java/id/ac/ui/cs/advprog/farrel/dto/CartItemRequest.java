@@ -11,7 +11,7 @@ public class CartItemRequest {
     private String productId;
     private int quantity;
     private double price;
-    private UUID userId;
+    private Integer userId;
 
     public void setQuantity(int quantity) {
         this.quantity = Math.max(quantity, 0);

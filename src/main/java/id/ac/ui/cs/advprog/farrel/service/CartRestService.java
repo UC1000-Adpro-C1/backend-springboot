@@ -13,7 +13,7 @@ public interface CartRestService {
     void addItemToCart(UUID cartId, CartItem cartItem);
     void removeItemFromCart(UUID cartId, UUID itemId);
     void deleteCart(UUID cartId);
-    Optional<Cart> getActiveCartByUserId(UUID userId);
-    void setUserIdForCart(UUID cartId, UUID userId);
+    Optional<Cart> getActiveCartByUserId(Integer userId);
+    void setUserIdForCart(UUID cartId, Integer userId);
     Payment checkoutCart(UUID cartId, String userId);
 }

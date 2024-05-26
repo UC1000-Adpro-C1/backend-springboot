@@ -20,7 +20,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID cartId;
 
-    private UUID userId;
+    private Integer userId;
 
     @OneToMany(mappedBy = "cartId", cascade = CascadeType.ALL)
     private List<CartItem> items = new ArrayList<>();

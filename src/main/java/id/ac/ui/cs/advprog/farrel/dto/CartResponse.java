@@ -9,6 +9,6 @@ import java.util.UUID;
 @Setter
 public class CartResponse {
     private UUID cartId;
-    private UUID userId;
+    private Integer userId;
     private UUID itemId;
 }

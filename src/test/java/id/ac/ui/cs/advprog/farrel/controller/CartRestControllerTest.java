@@ -44,7 +44,7 @@ public class CartRestControllerTest {
 
     @Test
     void testAddProductToCart_NewCartItem() throws Exception {
-        UUID userId = UUID.randomUUID();
+        Integer userId = 123;
         UUID cartId = UUID.randomUUID();
         UUID itemId = UUID.randomUUID();
         CartItemRequest cartItemRequest = new CartItemRequest();
@@ -94,7 +94,7 @@ public class CartRestControllerTest {
 
     @Test
     void testGetActiveCartByUserId_WithItems() throws Exception {
-        UUID userId = UUID.randomUUID();
+        Integer userId = 123;
         UUID cartId = UUID.randomUUID();
         UUID itemId = UUID.randomUUID();
         Cart cart = new Cart();
@@ -119,7 +119,7 @@ public class CartRestControllerTest {
 
     @Test
     void testGetActiveCartByUserId_NoActiveCart() throws Exception {
-        UUID userId = UUID.randomUUID();
+        Integer userId = 123;
 
         when(cartRestService.getActiveCartByUserId(userId)).thenReturn(Optional.empty());
 

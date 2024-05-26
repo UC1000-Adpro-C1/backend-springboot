@@ -66,7 +66,7 @@ public class CartRestServiceImpl implements CartRestService {
     }
 
     @Override
-    public Optional<Cart> getActiveCartByUserId(UUID userId) {
+    public Optional<Cart> getActiveCartByUserId(Integer userId) {
         Optional<Cart> cart = cartRepository.findByUserIdAndStateString(userId, "ActiveCartState");
         if (cart.isEmpty()) {
             cart = cartRepository.findByUserIdAndStateString(userId, "EmptyCartState");
@@ -76,7 +76,7 @@ public class CartRestServiceImpl implements CartRestService {
 
 
     @Override
-    public void setUserIdForCart(UUID cartId, UUID userId) {
+    public void setUserIdForCart(UUID cartId, Integer userId) {
         Cart cart = getCartById(cartId);
         cart.setUserId(userId);
         cartRepository.save(cart);

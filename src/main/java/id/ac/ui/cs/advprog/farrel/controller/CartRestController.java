@@ -31,7 +31,7 @@ public class CartRestController {
 
     @PostMapping("/carts/items")
     public ResponseEntity<CartResponse> addProductToCart(@RequestBody CartItemRequest cartItemRequest) {
-        UUID userId = cartItemRequest.getUserId();
+        Integer userId = cartItemRequest.getUserId();
         Optional<Cart> optionalCart = cartRestService.getActiveCartByUserId(userId);
         
         Cart cart;
@@ -61,7 +61,7 @@ public class CartRestController {
     }
 
     @GetMapping("/carts/active/{userId}")
-    public ResponseEntity<?> getActiveCartByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<?> getActiveCartByUserId(@PathVariable Integer userId) {
         Optional<Cart> optionalCart = cartRestService.getActiveCartByUserId(userId);
 
         if (optionalCart.isPresent()) {
