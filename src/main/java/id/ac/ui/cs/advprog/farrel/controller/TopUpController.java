@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "https://farrelc1-adpro.vercel.app/")
+@CrossOrigin(origins = "https://farrelc1-adpro.vercel.app")
 public class TopUpController {
 
     @Autowired
