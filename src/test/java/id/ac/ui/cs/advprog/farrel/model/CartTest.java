@@ -24,7 +24,7 @@ class CartTest {
         cartId = UUID.randomUUID();
         cart.setCartId(cartId);
 
-        cartItem = new CartItem("productId", 2, cart.getCartId().toString(), 1000.0);
+        cartItem = new CartItem("productId", 2, cart.getCartId(), 1000.0);
         cartItemId = UUID.randomUUID();
         cartItem.setItemId(cartItemId);
     }
@@ -85,7 +85,7 @@ class CartTest {
     void testAddItemInCheckedOutState() {
         cart.addItem(cartItem);
         cart.checkout();
-        assertThrows(IllegalStateException.class, () -> cart.addItem(new CartItem("productId2", 1, cart.getCartId().toString(), 500.0)));
+        assertThrows(IllegalStateException.class, () -> cart.addItem(new CartItem("productId2", 1, cart.getCartId(), 500.0)));
     }
 
     @Test
