@@ -6,4 +6,5 @@ import id.ac.ui.cs.advprog.farrel.model.Review;
 
 public interface SortStrategy {
     List<Review> sort(List<Review> listings);
+    
 }
