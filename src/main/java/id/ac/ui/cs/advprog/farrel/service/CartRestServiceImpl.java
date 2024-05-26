@@ -2,6 +2,8 @@ package id.ac.ui.cs.advprog.farrel.service;
 
 import id.ac.ui.cs.advprog.farrel.model.Cart;
 import id.ac.ui.cs.advprog.farrel.model.CartItem;
+import id.ac.ui.cs.advprog.farrel.model.Payment;
+import id.ac.ui.cs.advprog.farrel.model.state.CheckedOutCartState;
 import id.ac.ui.cs.advprog.farrel.model.state.EmptyCartState;
 import id.ac.ui.cs.advprog.farrel.repository.CartItemRepository;
 import id.ac.ui.cs.advprog.farrel.repository.CartRepository;
@@ -19,6 +21,9 @@ public class CartRestServiceImpl implements CartRestService {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private StaffRestService staffRestService;
 
     @Override
     public Cart createCart() {
@@ -75,6 +80,32 @@ public class CartRestServiceImpl implements CartRestService {
         Cart cart = getCartById(cartId);
         cart.setUserId(userId);
         cartRepository.save(cart);
+    }
+
+    @Override
+    public Payment checkoutCart(UUID cartId, String userId) {
+        Cart cart = getCartById(cartId);
+
+        // Calculate total amount
+        long totalAmount = (long) calculateTotalAmount(cart);
+
+        // Create a new payment
+        Payment payment = new Payment.PaymentBuilder(UUID.randomUUID(), totalAmount, userId)
+                .build();
+
+        Payment createdPayment = staffRestService.createPayment(payment);
+
+        // Update the cart state to CheckedOut
+        cart.setState(new CheckedOutCartState());
+        cartRepository.save(cart);
+
+        return createdPayment;
+    }
+
+    public double calculateTotalAmount(Cart cart) {
+        return cart.getItems().stream()
+                .mapToDouble(item -> item.getQuantity() * item.getPrice())
+                .sum();
     }
 
 }

@@ -4,12 +4,15 @@ import id.ac.ui.cs.advprog.farrel.dto.CartItemRequest;
 import id.ac.ui.cs.advprog.farrel.dto.CartResponse;
 import id.ac.ui.cs.advprog.farrel.model.Cart;
 import id.ac.ui.cs.advprog.farrel.model.CartItem;
+import id.ac.ui.cs.advprog.farrel.model.Payment;
 import id.ac.ui.cs.advprog.farrel.service.CartRestService;
 import id.ac.ui.cs.advprog.farrel.service.CartItemRestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,4 +76,10 @@ public class CartRestController {
         }
     }
 
+    @PostMapping("/carts/{cartId}/checkout")
+    public ResponseEntity<Payment> checkoutCart(@PathVariable UUID cartId, @RequestBody Map<String, String> requestBody) {
+        String userId = requestBody.get("userId");
+        Payment createdPayment = cartRestService.checkoutCart(cartId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPayment);
+    }
 }

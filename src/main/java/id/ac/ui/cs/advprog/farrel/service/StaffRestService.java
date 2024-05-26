@@ -100,7 +100,6 @@ public class StaffRestService implements StaffRestServiceInterface{
     @Override
     public Payment createPayment(Payment payment) {
         Payment newPayment = new Payment.PaymentBuilder(UUID.randomUUID(), payment.getAmount(), payment.getUserId())
-                .handledBy(payment.getHandledBy())
                 .build();
 
         paymentRepository.save(newPayment);
