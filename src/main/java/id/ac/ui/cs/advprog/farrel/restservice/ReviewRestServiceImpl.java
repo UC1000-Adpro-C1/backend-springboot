@@ -8,7 +8,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.repository.ReviewDb;
-import jakarta.transaction.Transactional;
+import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategy;
+import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategyDesc;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,7 +19,8 @@ import java.util.NoSuchElementException;
 public class ReviewRestServiceImpl implements ReviewRestService{
     @Autowired
     private ReviewDb reviewDb;
-    
+    private SortByRatingStrategy sortByRating;
+
     @Override
     public Review createRestReview(Review review){
         reviewDb.save(review);
@@ -64,6 +66,15 @@ public class ReviewRestServiceImpl implements ReviewRestService{
         }
     }
 
-
-
+    public List<Review> getAllReviewsSortedByRating(String id) {
+        List<Review> reviews = reviewDb.findByProductId(id);
+        sortByRating = new SortByRatingStrategy();
+        return sortByRating.sort(reviews);
+    }
+    public List<Review> getAllReviewsSortedByRatingDesc(String id) {
+        List<Review> reviews = reviewDb.findByProductId(id);
+        SortByRatingStrategyDesc sortByRating = new SortByRatingStrategyDesc();
+        return sortByRating.sort(reviews);
+    }
+    
 }

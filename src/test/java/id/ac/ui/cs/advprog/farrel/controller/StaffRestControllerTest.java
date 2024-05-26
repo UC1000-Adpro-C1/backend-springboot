@@ -93,7 +93,7 @@ public class StaffRestControllerTest {
     }
 
     @Test
-    public void testGetPendingTopUps() {
+    public void testGetPendingTopUpsNoSorting() {
         List<TopUp> pendingTopUps = new ArrayList<TopUp>();
 
         TopUp topUp1 = new TopUp();
@@ -109,13 +109,13 @@ public class StaffRestControllerTest {
         pendingTopUps.add(topUp1);
         pendingTopUps.add(topUp2);
 
-        when(staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name())).thenReturn(pendingTopUps);
+        when(staffRestService.findTopUpByStatus(TopUpStatus.PENDING.name(), "")).thenReturn(pendingTopUps);
 
-        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getPendingTopUps();
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getPendingTopUps("");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(pendingTopUps, responseEntity.getBody());
-        verify(staffRestService, times(1)).findTopUpByStatus(TopUpStatus.PENDING.name());
+        verify(staffRestService, times(1)).findTopUpByStatus(TopUpStatus.PENDING.name(), "");
     }
 
     @Test
@@ -135,13 +135,13 @@ public class StaffRestControllerTest {
         nonPendingTopUps.add(topUp1);
         nonPendingTopUps.add(topUp2);
 
-        when(staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name())).thenReturn(nonPendingTopUps);
+        when(staffRestService.findTopUpByStatusNot(TopUpStatus.PENDING.name(), "")).thenReturn(nonPendingTopUps);
 
-        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getNonPendingTopUps();
+        ResponseEntity<List<TopUp>> responseEntity = staffRestController.getNonPendingTopUps("");
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(nonPendingTopUps, responseEntity.getBody());
-        verify(staffRestService, times(1)).findTopUpByStatusNot(TopUpStatus.PENDING.name());
+        verify(staffRestService, times(1)).findTopUpByStatusNot(TopUpStatus.PENDING.name(), "");
     }
 
     @Test
@@ -225,9 +225,9 @@ public class StaffRestControllerTest {
     @Test
     public void testGetPendingPayment() {
         List<Payment> pendingPayments = Arrays.asList(new Payment(), new Payment());
-        when(staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name())).thenReturn(pendingPayments);
+        when(staffRestService.findPaymentByStatus(PaymentStatus.PENDING.name(), "")).thenReturn(pendingPayments);
 
-        ResponseEntity<List<Payment>> response = staffRestController.getPendingPayment();
+        ResponseEntity<List<Payment>> response = staffRestController.getPendingPayment("");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(pendingPayments, response.getBody());
@@ -236,9 +236,9 @@ public class StaffRestControllerTest {
     @Test
     public void testGetNonPendingPayments() {
         List<Payment> nonPendingPayments = Arrays.asList(new Payment(), new Payment());
-        when(staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name())).thenReturn(nonPendingPayments);
+        when(staffRestService.findPaymentByStatusNot(PaymentStatus.PENDING.name(), "")).thenReturn(nonPendingPayments);
 
-        ResponseEntity<List<Payment>> response = staffRestController.getNonPendingPayments();
+        ResponseEntity<List<Payment>> response = staffRestController.getNonPendingPayments("");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(nonPendingPayments, response.getBody());
@@ -262,7 +262,7 @@ public class StaffRestControllerTest {
         Payment updatedPayment = new Payment();
         when(staffRestService.updatePaymentStatus(id, PaymentStatus.FAILED.name())).thenReturn(updatedPayment);
 
-        ResponseEntity<Payment> response = staffRestController.updateStatusToFailed(id);
+        ResponseEntity<Payment> response = staffRestController.updatePaymentStatusToFailed(id);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedPayment, response.getBody());
