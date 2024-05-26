@@ -7,10 +7,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import id.ac.ui.cs.advprog.farrel.topupstate.PendingState;
+import id.ac.ui.cs.advprog.farrel.topupstate.SuccessState;
+import id.ac.ui.cs.advprog.farrel.topupstate.FailedState;
+import id.ac.ui.cs.advprog.farrel.topupstate.TopUpState;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,11 +24,14 @@ import lombok.Setter;
 @Getter @Setter
 public class TopUp {
 
+    @Transient
+    private TopUpState currentState = new PendingState();
+
     @Column(name="amount")
     private long amount;
 
     @Column(name = "status")
-    private String status = TopUpStatus.PENDING.name();
+    private String status = currentState.getState();
 
     @Column(name = "transactionTime")
     private LocalDate transactionTime;
@@ -44,7 +48,7 @@ public class TopUp {
     public TopUp(UUID topUpId, ArrayList<User> observerUsers, long amount, LocalDate transactionTime, String userOwnerId) {
         this.topUpId = topUpId;
         this.transactionTime = transactionTime;
-        this.status = TopUpStatus.PENDING.getValue();
+        this.status = new PendingState().getState();
         this.userOwnerId = userOwnerId;
 
         if (observerUsers.isEmpty()) {
@@ -56,7 +60,13 @@ public class TopUp {
 
     public void setStatus(String status) {
         if (TopUpStatus.contains(status)) {
-            this.status = status;
+            if (status.equals(TopUpStatus.FAILED.getValue())) {
+                currentState.processFailed(this);
+                this.status = currentState.getState();
+            } else {
+                currentState.processSuccess(this);
+                this.status = currentState.getState();
+            }
         } else {
             throw new IllegalArgumentException();
         }
