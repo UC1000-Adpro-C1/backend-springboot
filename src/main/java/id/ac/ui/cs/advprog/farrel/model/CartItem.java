@@ -21,7 +21,7 @@ public class CartItem {
     private String productId;
 
     @Column(name = "cart_id")
-    private String cartId;
+    private UUID cartId;
 
     @Column(name = "quantity")
     private int quantity;
@@ -29,7 +29,7 @@ public class CartItem {
     @Column(name = "price")
     private double price;
 
-    public CartItem(String productId, int quantity, String cartId, double price) {
+    public CartItem(String productId, int quantity, UUID cartId, double price) {
         this.productId = productId;
         this.quantity = quantity;
         this.cartId = cartId;

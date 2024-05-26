@@ -28,7 +28,8 @@ public class CartItemRestServiceTest {
 
     @Test
     void testCreateCartItem() {
-        CartItem cartItem = new CartItem("productId", 2, "cartId", 10.0);
+        UUID cartId = UUID.randomUUID();
+        CartItem cartItem = new CartItem("productId", 2, cartId, 10.0);
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
         CartItem createdCartItem = cartItemRestService.createCartItem(cartItem);
@@ -43,51 +44,29 @@ public class CartItemRestServiceTest {
     }
 
     @Test
-    void testIncreaseQuantity() {
-        int incrementQuantity = 2;
-        CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
+    void testUpdateQuantity() {
+        int newQuantity = 5;
+        UUID cartId = UUID.randomUUID();
+        CartItem cartItem = new CartItem("productId", 3, cartId, 10.0);
         UUID itemId = cartItem.getItemId();
 
         when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
-        
-        CartItem updatedCartItem = cartItemRestService.increaseQuantity(itemId, incrementQuantity);
+
+        CartItem updatedCartItem = cartItemRestService.updateQuantity(itemId, newQuantity);
 
         assertNotNull(updatedCartItem);
-        assertEquals(5, updatedCartItem.getQuantity());
+        assertEquals(newQuantity, updatedCartItem.getQuantity());
 
         verify(cartItemRepository, times(1)).findById(itemId);
         verify(cartItemRepository, times(1)).save(cartItem);
-    }
-
-    @Test
-    void testDecreaseQuantity() {
-        int decrementQuantity = 1;
-        CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
-        UUID itemId = cartItem.getItemId();
-        when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
-        when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
-
-        CartItem updatedCartItem = cartItemRestService.decreaseQuantity(itemId, decrementQuantity);
-
-        assertNotNull(updatedCartItem);
-        assertEquals(2, updatedCartItem.getQuantity());
-
-        verify(cartItemRepository, times(1)).findById(itemId);
-        verify(cartItemRepository, times(1)).save(cartItem);
-    }
-
-    @Test
-    void testDeleteCartItem() {
-        UUID itemId = UUID.randomUUID();
-        cartItemRestService.deleteCartItem(itemId);
-        verify(cartItemRepository, times(1)).deleteById(itemId);
     }
 
     @Test
     void testUpdatePrice() {
+        UUID cartId = UUID.randomUUID();
         double newPrice = 15.0;
-        CartItem cartItem = new CartItem("productId", 3, "cartId", 10.0);
+        CartItem cartItem = new CartItem("productId", 3, cartId, 10.0);
         UUID itemId = cartItem.getItemId();
         when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
@@ -99,5 +78,21 @@ public class CartItemRestServiceTest {
 
         verify(cartItemRepository, times(1)).findById(itemId);
         verify(cartItemRepository, times(1)).save(cartItem);
+    }
+
+    @Test
+    void testGetCartItem() {
+        UUID cartId = UUID.randomUUID();
+        UUID itemId = UUID.randomUUID();
+        CartItem cartItem = new CartItem("productId", 2, cartId, 10.0);
+        when(cartItemRepository.findById(itemId)).thenReturn(Optional.of(cartItem));
+
+        Optional<CartItem> foundCartItemOptional = cartItemRestService.getCartItem(itemId);
+
+        assertTrue(foundCartItemOptional.isPresent());
+        CartItem foundCartItem = foundCartItemOptional.get();
+        assertEquals(cartItem.getProductId(), foundCartItem.getProductId());
+
+        verify(cartItemRepository, times(1)).findById(itemId);
     }
 }

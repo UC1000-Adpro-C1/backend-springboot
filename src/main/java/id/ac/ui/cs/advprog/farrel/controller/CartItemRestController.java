@@ -22,36 +22,11 @@ public class CartItemRestController {
         this.cartItemRestService = cartItemRestService;
     }
 
-    @PostMapping
-    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem) {
-        CartItem createdCartItem = cartItemRestService.createCartItem(cartItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCartItem);
-    }
-
-    @PutMapping("/{itemId}/increase-quantity")
-    public ResponseEntity<CartItem> increaseQuantity(@PathVariable UUID itemId, @RequestBody Map<String, Integer> requestBody) {
-        int incrementQuantity = requestBody.get("quantity");
-        CartItem updatedCartItem = cartItemRestService.increaseQuantity(itemId, incrementQuantity);
-        return ResponseEntity.ok(updatedCartItem);
-    }
-
-    @PutMapping("/{itemId}/decrease-quantity")
-    public ResponseEntity<CartItem> decreaseQuantity(@PathVariable UUID itemId, @RequestBody Map<String, Integer> requestBody) {
-        int decrementQuantity = requestBody.get("quantity");
-        CartItem updatedCartItem = cartItemRestService.decreaseQuantity(itemId, decrementQuantity);
-        return ResponseEntity.ok(updatedCartItem);
-    }
-
-    @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> deleteCartItem(@PathVariable UUID itemId) {
-        cartItemRestService.deleteCartItem(itemId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{itemId}/update-price")
-    public ResponseEntity<CartItem> updatePrice(@PathVariable UUID itemId, @RequestBody Map<String, Double> requestBody) {
-        double newPrice = requestBody.get("price");
-        CartItem updatedCartItem = cartItemRestService.updatePrice(itemId, newPrice);
+    @PutMapping("/{itemId}/update-quantity")
+    public ResponseEntity<CartItem> updateQuantity(@PathVariable UUID itemId,
+            @RequestBody Map<String, Integer> requestBody) {
+        int newQuantity = requestBody.get("quantity");
+        CartItem updatedCartItem = cartItemRestService.updateQuantity(itemId, newQuantity);
         return ResponseEntity.ok(updatedCartItem);
     }
 }

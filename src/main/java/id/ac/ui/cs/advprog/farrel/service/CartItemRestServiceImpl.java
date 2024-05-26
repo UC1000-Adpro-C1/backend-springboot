@@ -23,32 +23,14 @@ public class CartItemRestServiceImpl implements CartItemRestService {
     }
 
     @Override
-    public CartItem increaseQuantity(UUID itemId, int incrementQuantity) {
+    public CartItem updateQuantity(UUID itemId, int newQuantity) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findById(itemId);
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
-            int newQuantity = cartItem.getQuantity() + incrementQuantity;
             cartItem.setQuantity(newQuantity);
             return cartItemRepository.save(cartItem);
         }
         throw new IllegalArgumentException("CartItem not found with itemId: " + itemId);
-    }
-
-    @Override
-    public CartItem decreaseQuantity(UUID itemId, int decrementQuantity) {
-        Optional<CartItem> optionalCartItem = cartItemRepository.findById(itemId);
-        if (optionalCartItem.isPresent()) {
-            CartItem cartItem = optionalCartItem.get();
-            int newQuantity = cartItem.getQuantity() - decrementQuantity;
-            cartItem.setQuantity(newQuantity);
-            return cartItemRepository.save(cartItem);
-        }
-        throw new IllegalArgumentException("CartItem not found with itemId: " + itemId);
-    }
-
-    @Override
-    public void deleteCartItem(UUID itemId) {
-        cartItemRepository.deleteById(itemId);
     }
 
     @Override
@@ -61,4 +43,10 @@ public class CartItemRestServiceImpl implements CartItemRestService {
         }
         throw new IllegalArgumentException("CartItem not found with itemId: " + itemId);
     }
+
+    @Override
+    public Optional<CartItem> getCartItem(UUID itemId) {
+        return cartItemRepository.findById(itemId);
+    }
+
 }

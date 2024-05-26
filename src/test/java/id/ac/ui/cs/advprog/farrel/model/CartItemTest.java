@@ -11,10 +11,12 @@ import java.util.UUID;
 class CartItemTest {
     private CartItem cartItem;
     private UUID itemId;
+    private UUID cartId;
 
     @BeforeEach
     void setUp() {
-        cartItem = new CartItem("productId", 2, "cartId", 1000.0);
+        cartId = UUID.randomUUID();
+        cartItem = new CartItem("productId", 2, cartId, 1000.0);
         itemId = UUID.randomUUID();
         cartItem.setItemId(itemId);
     }
@@ -36,7 +38,7 @@ class CartItemTest {
 
     @Test
     void testGetCartId() {
-        assertEquals("cartId", cartItem.getCartId());
+        assertEquals(cartId, cartItem.getCartId());
     }
 
     @Test
