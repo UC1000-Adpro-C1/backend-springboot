@@ -20,7 +20,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody Order order){
         Map<String, Object> res = new HashMap<>();
         try{
@@ -52,7 +52,7 @@ public class OrderController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@RequestBody Order order){
         Map<String, Object> res = new HashMap<>();
         try{

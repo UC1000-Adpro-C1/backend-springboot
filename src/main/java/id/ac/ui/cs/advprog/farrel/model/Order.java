@@ -5,10 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
 import java.util.UUID;
 
-@Getter @Setter
+@Getter
+@Setter
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -23,17 +23,20 @@ public class Order {
     @Column(name = "buyer_id", nullable = false)
     private String buyerId;
 
-    public Order(){
+    @Column(name = "product_name", nullable = false)
+    private String productName;
 
-    }
-    public Order(Order.OrderBuilder builder){
+    public Order() {}
+
+    public Order(Order.OrderBuilder builder) {
         this.id = UUID.randomUUID().toString();
         this.status = builder.status;
         this.buyerId = builder.buyerId;
+        this.productName = builder.productName;
     }
 
     public void setStatus(String status) {
-        if(OrderStatus.contains(status)){
+        if (OrderStatus.contains(status)) {
             this.status = status;
         } else {
             throw new IllegalArgumentException();
@@ -43,17 +46,24 @@ public class Order {
     public static class OrderBuilder {
         // Required parameters
         private String buyerId;
+        private String productName;
 
         // Optional parameters
         private String status;
 
-        public OrderBuilder(String buyerId) {
+        public OrderBuilder(String buyerId, String productName) {
             this.buyerId = buyerId;
+            this.productName = productName;
             this.status = OrderStatus.WAITING_PAYMENT.getValue();
         }
 
         public Order.OrderBuilder setBuyerId(String buyerId) {
             this.buyerId = buyerId;
+            return this;
+        }
+
+        public Order.OrderBuilder setProductName(String productName) {
+            this.productName = productName;
             return this;
         }
 

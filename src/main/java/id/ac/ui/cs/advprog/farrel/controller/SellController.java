@@ -51,7 +51,7 @@ public class SellController {
                 });
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     public CompletableFuture<ResponseEntity<Map<String, Object>>> updateProduct(@RequestBody Product product){
         Map<String, Object> res = new HashMap<>();
         return productService.update(product)
