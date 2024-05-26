@@ -17,7 +17,7 @@ public class SellController {
     @Autowired
     SellControllerService productService;
 
-    @PostMapping
+    @PostMapping("/create")
     public CompletableFuture<ResponseEntity<Map<String, Object>>> createProduct(@RequestBody Product product){
         Map<String, Object> res = new HashMap<>();
         return productService.create(product)
@@ -34,13 +34,13 @@ public class SellController {
                 });
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public CompletableFuture<ResponseEntity<Map<String, Object>>> deleteProduct(@PathVariable("id") String id){
         Map<String, Object> res = new HashMap<>();
         return productService.delete(id)
                 .thenApply(result -> {
                     res.put("code", HttpStatus.OK.value());
-                    res.put("message", "Listing Deleted Successfully");
+                    res.put("message", "Product Deleted Successfully");
                     return ResponseEntity.status(HttpStatus.OK).body(res);
                 })
                 .exceptionally(e -> {
@@ -92,6 +92,25 @@ public class SellController {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
                     }
                     return ResponseEntity.ok(product.get());
+                })
+                .exceptionally(e -> {
+                    response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.put("error", e.getMessage());
+                    response.put("message", "Something Wrong With Server");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+                });
+    }
+    @GetMapping("/seller/{id}")
+    public CompletableFuture<ResponseEntity<?>> findBySellerId(@PathVariable("id") String id){
+        Map<String, Object> response = new HashMap<>();
+        return productService.findBySellerId(id)
+                .thenApply(product -> {
+                    if (product.isEmpty()){
+                        response.put("code", HttpStatus.NOT_FOUND.value());
+                        response.put("message", "Listing with ID " + id + " not found.");
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                    }
+                    return ResponseEntity.ok(product);
                 })
                 .exceptionally(e -> {
                     response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());

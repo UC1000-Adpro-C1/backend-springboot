@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.farrel.service;
-
+import id.ac.ui.cs.advprog.farrel.repository.SellRepository;
+import id.ac.ui.cs.advprog.farrel.strategy.ProductSortingStrategy;
 import id.ac.ui.cs.advprog.farrel.model.Product;
 import id.ac.ui.cs.advprog.farrel.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,16 @@ public class SellControllerServiceImpl implements SellControllerService {
     public CompletableFuture<Optional<Product>> findById(String id){
 
         return CompletableFuture.completedFuture(productRepository.findById(id));
+    }
+    @Override
+    @Async
+    public CompletableFuture<List<Product>> findBySellerId(String id){
+        return CompletableFuture.completedFuture(productRepository.findBySellerId(id));
+    }
+
+    @Override
+    public void setSortStrategy(ProductSortingStrategy sortStrategy) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setSortStrategy'");
     }
 }

@@ -30,27 +30,27 @@ class SellServiceImplTest {
 
     }
 
-    @Test
-    void testCreateAndFind() throws ExecutionException, InterruptedException{
-        Product.ProductBuilder builder = new Product.ProductBuilder("Sampo cap Bambang", 12000);
-        Product product = builder.setStockQuantity(99)
-                .setDescription("Sampo cap Bambangg")
-                .setImageUrl("google.com")
-                .build();
+     @Test
+     void testCreateAndFind() throws ExecutionException, InterruptedException{
+         Product.ProductBuilder builder = new Product.ProductBuilder("Sampo cap Bambang", 12000);
+         Product product = builder.setStockQuantity(99)
+                 .setDescription("Sampo cap Bambangg")
+                 .setImageUrl("google.com")
+                 .build();
 
-        Mockito.when(productRepository.save(product)).thenReturn(product);
-        productService.create(product);
+         Mockito.when(productRepository.save(product)).thenReturn(product);
+         productService.create(product);
 
-        Mockito.when(productRepository.findAll()).thenReturn(List.of(product));
-        CompletableFuture<List<Product>> productListFuture = productService.findAll();
-        List<Product> productList = productListFuture.get();
+         Mockito.when(productRepository.findAll()).thenReturn(List.of(product));
+         CompletableFuture<List<Product>> productListFuture = productService.findAll();
+         List<Product> productList = productListFuture.get();
 
-        assertFalse(productList.isEmpty());
-        Product savedProduct = productList.getFirst();
-        assertEquals(product.getProductId(), savedProduct.getProductId());
-        assertEquals(product.getProductName(), savedProduct.getProductName());
-        assertEquals(product.getStockQuantity(), savedProduct.getStockQuantity());
-    }
+         assertFalse(productList.isEmpty());
+         Product savedProduct = productList.getFirst();
+         assertEquals(product.getProductId(), savedProduct.getProductId());
+         assertEquals(product.getProductName(), savedProduct.getProductName());
+         assertEquals(product.getStockQuantity(), savedProduct.getStockQuantity());
+     }
 
     @Test
     void testFindAllIfEmpty() throws ExecutionException, InterruptedException {
@@ -63,33 +63,33 @@ class SellServiceImplTest {
         assertTrue(products.isEmpty());
     }
 
-    @Test
-    void testFindAllIfMoreThanOneProduct() throws ExecutionException, InterruptedException {
-        Product.ProductBuilder builder = new Product.ProductBuilder("Sampo cap Bambang", 12000);
-        Product product1 = builder.setStockQuantity(99)
-                .setDescription("Sampo cap Bambangg")
-                .setImageUrl("google.com")
-                .build();
+     @Test
+     void testFindAllIfMoreThanOneProduct() throws ExecutionException, InterruptedException {
+         Product.ProductBuilder builder = new Product.ProductBuilder("Sampo cap Bambang", 12000);
+         Product product1 = builder.setStockQuantity(99)
+                 .setDescription("Sampo cap Bambangg")
+                 .setImageUrl("google.com")
+                 .build();
 
-        Mockito.when(productRepository.save(product1)).thenReturn(product1);
-        productService.create(product1);
+         Mockito.when(productRepository.save(product1)).thenReturn(product1);
+         productService.create(product1);
 
-        Product product2 = builder.setStockQuantity(99)
-                .setDescription("Sampo cap Paijo")
-                .setImageUrl("Paijo.com")
-                .build();
-        Mockito.when(productRepository.save(product2)).thenReturn(product2);
-        productService.create(product2);
+         Product product2 = builder.setStockQuantity(99)
+                 .setDescription("Sampo cap Paijo")
+                 .setImageUrl("Paijo.com")
+                 .build();
+         Mockito.when(productRepository.save(product2)).thenReturn(product2);
+         productService.create(product2);
 
-        Mockito.when(productRepository.findAll()).thenReturn(List.of(product1, product2));
-        CompletableFuture<List<Product>> productListFuture = productService.findAll();
-        List<Product> productList = productListFuture.get();
+         Mockito.when(productRepository.findAll()).thenReturn(List.of(product1, product2));
+         CompletableFuture<List<Product>> productListFuture = productService.findAll();
+         List<Product> productList = productListFuture.get();
 
-        assertFalse(productList.isEmpty());
-        assertEquals(product1.getProductId(), productList.getFirst().getProductId());
-        assertEquals(product2.getProductId(), productList.get(1).getProductId());
-        assertFalse(productList.isEmpty());
-    }
+         assertFalse(productList.isEmpty());
+         assertEquals(product1.getProductId(), productList.getFirst().getProductId());
+         assertEquals(product2.getProductId(), productList.get(1).getProductId());
+         assertFalse(productList.isEmpty());
+     }
 
     @Test
     void testEditProduct() throws ExecutionException, InterruptedException {
