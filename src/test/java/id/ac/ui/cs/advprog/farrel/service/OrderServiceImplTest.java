@@ -33,7 +33,7 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreateAndFind() {
-        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId");
+        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId", "FakeItemTest");
         Order order = builder.setBuyerId("FakeBuyerId")
                 .build();
 
@@ -63,7 +63,7 @@ public class OrderServiceImplTest {
 
     @Test
     void testFindAllIfMoreThanOneOrder() {
-        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId");
+        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId", "FakeItemTest");
         Order order1 = builder.setBuyerId("FakeBuyerId")
                 .build();
 
@@ -86,14 +86,14 @@ public class OrderServiceImplTest {
 
     @Test
     void testEditOrder() {
-        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId");
+        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId", "FakeItemTest");
         Order order = builder.setBuyerId("FakeBuyerId")
                 .build();
         order.setId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         Mockito.when(orderRepository.save(order)).thenReturn(order);
         orderService.create(order);
 
-        builder = new Order.OrderBuilder("FakeItemId2");
+        builder = new Order.OrderBuilder("FakeItemId2", "FakeItemTest");
         Order editedOrder = builder.setBuyerId("FakeBuyerId")
                 .build();
         editedOrder.setId("eb558e9f-1c39-460e-8860-71af6af63bd6");
@@ -108,7 +108,7 @@ public class OrderServiceImplTest {
 
     @Test
     void testDeleteOrder() {
-        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId");
+        Order.OrderBuilder builder = new Order.OrderBuilder("FakeItemId", "FakeItemTest");
         Order order1 = builder.setBuyerId("FakeBuyerId")
                 .build();
 

@@ -12,7 +12,7 @@ public class OrderTest {
 
     @BeforeEach
     void SetUp(){
-        this.orderBuilder = new Order.OrderBuilder("FakeBuyerId");
+        this.orderBuilder = new Order.OrderBuilder("FakeBuyerId", "FakeItemTest");
         this.order = orderBuilder.build();
     }
     @Test
