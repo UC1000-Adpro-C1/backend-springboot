@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.farrel.restservice;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import id.ac.ui.cs.advprog.farrel.model.Review;
 import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategy;
+import id.ac.ui.cs.advprog.farrel.strategy.SortByRatingStrategyDesc;
 import id.ac.ui.cs.advprog.farrel.repository.ReviewDb;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,5 +129,83 @@ public class ReviewRestServiceImplTest {
         assertThrows(NoSuchElementException.class, () -> {
             reviewService.restDeleteReview(randomUUID);
         });
+    }
+    @Test
+    void testGetAllReviewsSortedByRating() {
+        // Prepare test data
+        UUID reviewId1 = UUID.randomUUID();
+        UUID reviewId2 = UUID.randomUUID();
+        UUID reviewId3 = UUID.randomUUID();
+
+        List<Review> reviews = Arrays.asList(
+                new Review(reviewId1, "user123", "product123", 1, "EW!"),
+                new Review(reviewId2, "user123", "product123", 5, "Amazing!"),
+                new Review(reviewId3, "user123", "product123", 3, "Okay")
+        );
+
+        // Stubbing the reviewDb behavior
+        when(reviewDb.findByProductId(anyString())).thenReturn(reviews);
+
+
+        // Calling the service method
+        List<Review> sortedReviews = reviewService.getAllReviewsSortedByRating("product123");
+
+        // Asserting that the sorted reviews match the expected order
+        for (int i = 0; i < reviews.size(); i++) {
+            assertEquals(reviews.get(i), sortedReviews.get(i));
+        }
+
+        // Verifying that the reviewDb method was called once
+        verify(reviewDb, times(1)).findByProductId("product123");
+    }
+
+    @Test
+    void testGetAllReviewsSortedByRatingDesc() {
+        // Prepare test data
+        UUID reviewId1 = UUID.randomUUID();
+        UUID reviewId2 = UUID.randomUUID();
+        UUID reviewId3 = UUID.randomUUID();
+
+        List<Review> reviews = Arrays.asList(
+                new Review(reviewId1, "user123", "product123", 1, "EW!"),
+                new Review(reviewId2, "user123", "product123", 5, "Amazing!"),
+                new Review(reviewId3, "user123", "product123", 3, "Okay")
+        );
+
+        
+        // Stubbing the reviewDb behavior
+        when(reviewDb.findByProductId(anyString())).thenReturn(reviews);
+
+        // Calling the service method
+        List<Review> sortedReviews = reviewService.getAllReviewsSortedByRatingDesc("product123");
+
+        // Asserting that the sorted reviews match the expected order
+        for (int i = 0; i < reviews.size(); i++) {
+            assertEquals(reviews.get(i), sortedReviews.get(i));
+        }
+
+        // Verifying that the reviewDb method was called once
+        verify(reviewDb, times(1)).findByProductId("product123");
+    }
+    @Test
+    void testGetRestReviewByProductId() {
+        String productId = "product1";
+        List<Review> expectedReviews = new ArrayList<>();
+        // Add mock reviews with different ratings
+        UUID reviewId1 = UUID.randomUUID();
+        UUID reviewId2 = UUID.randomUUID();
+        UUID reviewId3 = UUID.randomUUID();
+        expectedReviews.add(new Review(reviewId1, "user123", "product123", 1, "EW!"));
+        expectedReviews.add(new Review(reviewId2, "user123", "product123", 4, "EW!"));
+        expectedReviews.add(new Review(reviewId3, "user123", "product123", 3, "EW!"));
+
+        // Mock the behavior of reviewDb.findByProductId(id)
+        when(reviewDb.findByProductId(productId)).thenReturn(expectedReviews);
+
+        // Call the method under test
+        List<Review> actualReviews = reviewService.getRestReviewByProductId(productId);
+
+        // Assert that the returned list matches the expected list
+        assertEquals(expectedReviews, actualReviews);
     }
 }
