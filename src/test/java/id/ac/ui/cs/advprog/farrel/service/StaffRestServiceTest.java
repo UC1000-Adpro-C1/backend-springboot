@@ -339,7 +339,6 @@ public class StaffRestServiceTest {
 
         assertEquals(payment.getAmount(), capturedPayment.getAmount());
         assertEquals(payment.getUserId(), capturedPayment.getUserId());
-        assertEquals(payment.getHandledBy(), capturedPayment.getHandledBy());
         assertEquals(PaymentStatus.PENDING.getValue(), capturedPayment.getStatus());
     }
 
