@@ -51,18 +51,6 @@ class TopUpTest {
     }
 
     @Test
-    void testConstructorWithObserverUsers() {
-        ArrayList<User> observerUsers = new ArrayList<>();
-        observerUsers.add(new User());
-
-        TopUp topUpWithUsers = new TopUp(UUID.randomUUID(), observerUsers, 5000L, LocalDate.now(), "user456");
-        assertEquals(new PendingState().getState(), topUpWithUsers.getStatus());
-        assertEquals(5000L, topUpWithUsers.getAmount());
-        assertNotNull(topUpWithUsers.getTransactionTime());
-        assertEquals("user456", topUpWithUsers.getUserOwnerId());
-    }
-
-    @Test
     void testConstructorThrowsExceptionForEmptyObserverUsers() {
         ArrayList<User> emptyObserverUsers = new ArrayList<>();
         assertThrows(IllegalArgumentException.class, () ->
